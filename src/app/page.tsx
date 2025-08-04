@@ -67,7 +67,7 @@ const Page: React.FC = () => {
                 </Button>
             </nav>
             {/* Filters */}
-                <div className="pt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
+                <div className="pt-4 flex flex-wrap gap-6">
                     <div className="relative w-full max-w-sm">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
                         <Input
