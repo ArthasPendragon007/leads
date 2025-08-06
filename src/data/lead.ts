@@ -11,8 +11,7 @@ export interface Lead {
   meio: string
   anuncio: string
   status: string
+  parceiro: string
 }
 
 export type TabType = "pendentes" | "concluidos"
-
-export type CopyType = "Nome" | "Email" | "Cnpj"
