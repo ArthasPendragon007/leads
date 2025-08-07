@@ -1,5 +1,5 @@
 // src/services/getLeads.ts
-import { Lead } from "@/data/lead";
+import { Lead } from "@/entities/lead";
 import { apiLead } from "@/api/api_leads";
 import {AxiosResponse} from "axios";
 import * as url from "node:url";

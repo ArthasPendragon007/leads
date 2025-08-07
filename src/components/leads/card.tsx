@@ -4,69 +4,55 @@ import {
 } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { TableCell, TableRow } from "@/components/ui/table"
-import {Check, Copy, RotateCw} from "lucide-react"
-import {Lead} from "@/data/lead";
+import {Check, RotateCw} from "lucide-react"
+import {Lead} from "@/entities/lead";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import React, {useState} from "react";
-import {CopyText} from "@/components/copyText";
-import {putLeads} from "@/service/lead/lead_service";
+import {CopyText} from "@/components/shared/copyText";
 import {Input} from "@/components/ui/input";
+import {putLeads} from "@/features/leads/service/lead_service";
+import {limparTexto} from "@/features/leads/utils/formatters";
 
 interface LeadTableRowProps {
     lead: Lead
-    onConcluir: (status: string) => void
+    onConcluir: () => void
+    ocultarParceiro: boolean|undefined
 }
-function limparTexto(texto: string): string {
-    return texto
-        .normalize("NFD") // separa caracteres acentuados
-        .replace(/[\u0300-\u036f]/g, "") // remove os acentos
-        .replace(/ç/g, "c") // substitui 'ç'
-        .replace(/Ç/g, "C") // substitui 'Ç'
-        .replace(/[^a-zA-Z0-9 ]/g, ""); // remove todos os caracteres especiais restantes
-}
-const LeadTableRow: React.FC<LeadTableRowProps> = ({ lead: initialLead, onConcluir }) => {
+
+const LeadCard: React.FC<LeadTableRowProps> = ({ lead: initialLead, onConcluir, ocultarParceiro }) => {
     const [lead, setLead] = useState<Lead>(initialLead);
-    const toggleStatus = async () => {
-        const novoStatus = lead.status === "concluido" ? "pendente" : "concluido";
 
-        const leadAtualizado = { ...lead, status: novoStatus };
-        setLead(leadAtualizado);
+    const handleChange = async (campo: keyof Lead, valor: any) => {
+        const leadAtualizado = { ...lead, [campo]: valor };
 
-        try {
-            await putLeads(leadAtualizado);
-            onConcluir(novoStatus);
-        } catch (error) {
-            console.error("Erro ao atualizar status:", error);
-            // opcional: reverter status em caso de erro
-            setLead(lead);
-        }
-    };
-    const handleInteresseChange = async (novoInteresse: string) => {
-        const leadAtualizado = { ...lead, interesse: novoInteresse };
-        setLead(leadAtualizado);
+        setLead(leadAtualizado); // Otimismo
 
         try {
             await putLeads(leadAtualizado);
+            onConcluir();
         } catch (error) {
-            console.error("Erro ao atualizar interesse:", error);
-            // opcional: reverter interesse em caso de erro
-            setLead(lead);
+            console.error("Erro ao atualizar lead:", error);
+            setLead(lead); // Reverte em caso de erro
         }
     };
 
-    const handleParceiroChange = async (novoParceiro: string) => {
-        const leadAtualizado = { ...lead, parceiro: novoParceiro };
-        setLead(leadAtualizado);
 
-        try {
-            await putLeads(leadAtualizado);
-        } catch (error) {
-            console.error("Erro ao atualizar parceiro:", error);
-            // opcional: reverter interesse em caso de erro
-            setLead(lead);
+    const formatFonteMeio = (fonte?: string, meio?: string): string => {
+        if (!fonte && !meio) return "";
+
+        const clean = (text: string) =>
+            text.trim().toLowerCase().replace(/\s+/g, "");
+
+        if (fonte && meio && clean(fonte) === clean(meio)) {
+            return `${fonte}`;
         }
-    };
 
+        if (fonte && meio) {
+            return `${fonte} (${meio})`;
+        }
+
+        return fonte || meio || "";
+    };
     return (
         <TableRow key={lead.id} className="border-gray-200">
             <TableCell>
@@ -88,34 +74,40 @@ const LeadTableRow: React.FC<LeadTableRowProps> = ({ lead: initialLead, onConclu
             </TableCell>
 
             <TableCell>
-                <span className="text-gray-900">{lead.fonte}</span>
+<span className="text-gray-900">
+  {formatFonteMeio(lead.fonte, lead.meio)}
+</span>
             </TableCell>
 
             <TableCell>
-                <span className="text-blue-600 hover:underline cursor-pointer">{lead.anuncio}</span>
+                <span className="text-blue-600">{lead.anuncio}</span>
             </TableCell>
-            <TableCell>
+            {!ocultarParceiro && (
+                <TableCell className="align-middle">
                 <Input
-                    defaultValue={lead.parceiro}
-                    onBlur={(e) => handleParceiroChange(e.target.value)}
-                    className="text-gray-900"
-                />
-            </TableCell>
+                defaultValue={lead.parceiro}
+            onBlur={(e) => handleChange("parceiro", e.target.value)}
+            className="flex w-40 rounded-md border border-input bg-background px-3 py-2 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 h-8 text-sm"
+            disabled={lead.interesse === 'revenda'}
+        />
+</TableCell>
+)}
+
+
 
             <TableCell>
                 <Select
                     value={limparTexto(lead.interesse.toLowerCase())}
-                    onValueChange={handleInteresseChange}
+                    onValueChange={(value) => handleChange("interesse", value)}
                 >
-                    <SelectTrigger
-                        className={`
-      px-2 py-1 text-sm rounded-full border
-      ${lead.interesse.toLowerCase() === "revenda"
+                    <SelectTrigger className={
+                        `
+  px-2 py-1 text-sm rounded-full border
+  ${lead.interesse === "revenda"
                             ? "border-blue-200 text-black bg-blue-50"
                             : "border-orange-200 text-black bg-orange-50"}
-      hover:opacity-90 transition-all
-    `}
-                    >
+  hover:opacity-90 transition-all
+`}>
                         <SelectValue placeholder="Selecione o interesse" />
                     </SelectTrigger>
 
@@ -124,6 +116,7 @@ const LeadTableRow: React.FC<LeadTableRowProps> = ({ lead: initialLead, onConclu
                         <SelectItem value="utilizacao">Utilização</SelectItem>
                     </SelectContent>
                 </Select>
+
 
             </TableCell>
 
@@ -148,7 +141,7 @@ const LeadTableRow: React.FC<LeadTableRowProps> = ({ lead: initialLead, onConclu
                             ? "text-yellow-500 hover:text-yellow-600 hover:bg-yellow-50"
                             : "text-green-600 hover:text-green-700 hover:bg-green-50"
                     }
-                    onClick={toggleStatus}
+                    onClick={ () =>   handleChange("status", lead.status === "concluido" ? "pendente" : "concluido")}
                 >
                     {lead.status === "concluido" ? (
                         <>
@@ -168,7 +161,7 @@ const LeadTableRow: React.FC<LeadTableRowProps> = ({ lead: initialLead, onConclu
     )
 }
 
-export default LeadTableRow
+export default LeadCard
 
 
 export function formatarDocumento(valor: string): string {

@@ -7,14 +7,17 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Calendar, LucideMegaphone, Users, Zap } from "lucide-react"
-import LeadTableRow from "./card-lead"
-import { Lead } from "@/data/lead"
+import LeadCard from "./card"
+import { Lead } from "@/entities/lead"
 
 interface LeadTableSectionProps {
     leads: Lead[]
     title?: string
     subtitle?: string
+    total?: number
     onConcluir: () => void
+    ocultarParceiro?: boolean
+
 }
 
 export const LeadTableSection: React.FC<LeadTableSectionProps> = ({
@@ -22,14 +25,17 @@ export const LeadTableSection: React.FC<LeadTableSectionProps> = ({
                                                                       title = "Leads ativos",
                                                                       subtitle = "Todos os leads ativos",
                                                                       onConcluir,
-                                                                  }) => {
+                                                                      total,
+                                                                      ocultarParceiro,
+
+}) => {
     return (
         <div className="pt-4">
             <Card className="border-0 shadow-sm">
                 <CardContent>
                     <div className="pb-5 border-b border-gray-200">
                         <h3 className="text-lg font-semibold">
-                            {leads.length} {title}
+                            {total} {title}
                         </h3>
                         <p className="text-sm text-gray-600">{subtitle}</p>
                     </div>
@@ -59,9 +65,12 @@ export const LeadTableSection: React.FC<LeadTableSectionProps> = ({
                                         <span>Anúncio</span>
                                     </div>
                                 </TableHead>
-                                <TableHead className="text-gray-600 font-medium pl-6">
-                                    Parceiro
-                                </TableHead>
+                                {!ocultarParceiro
+                                    && (
+                                    <TableHead className="text-gray-600 font-medium pl-6">
+                                        Parceiro
+                                    </TableHead>
+                                )}
                                 <TableHead className="text-gray-600 font-medium pl-6">
                                     Interesse
                                 </TableHead>
@@ -78,10 +87,12 @@ export const LeadTableSection: React.FC<LeadTableSectionProps> = ({
                         </TableHeader>
                         <TableBody>
                             {leads.map((lead) => (
-                                <LeadTableRow
+                                <LeadCard
                                     key={lead.id}
                                     lead={lead}
                                     onConcluir={onConcluir}
+                                    ocultarParceiro={ocultarParceiro}
+
                                 />
                             ))}
                         </TableBody>

@@ -9,15 +9,15 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { LucideCircleCheckBig, Search, Users } from "lucide-react";
-import { TabType } from "@/data/lead";
+import { TabType } from "@/entities/lead";
 
 interface Filters {
-    nome?: string;
+    busca?: string;
     origem?: string;
     interesse?: string;
 }
 
-interface LeadTabsProps {
+interface LeadsTabsProps {
     activeTab: TabType;
     onChange: (tab: TabType) => void;
 
@@ -26,7 +26,7 @@ interface LeadTabsProps {
     onFilterChange: (filters: Filters) => void;
 }
 
-export const TabsLead: React.FC<LeadTabsProps> = ({
+export const LeadsTabs: React.FC<LeadsTabsProps> = ({
                                                       activeTab = "concluidos",
                                                       onChange,
                                                       filters,
@@ -71,8 +71,8 @@ export const TabsLead: React.FC<LeadTabsProps> = ({
                 <div className="relative w-full max-w-sm">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
                     <Input
-                        value={filters.nome ?? ""}
-                        onChange={(e) => onFilterChange({ ...filters, nome: e.target.value })}
+                        value={filters.busca ?? ""}
+                        onChange={(e) => onFilterChange({ ...filters, busca: e.target.value })}
                         placeholder="Buscar por nome..."
                         className="pl-10"
                     />
