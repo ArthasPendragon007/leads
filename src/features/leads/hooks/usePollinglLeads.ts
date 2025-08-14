@@ -1,5 +1,5 @@
-// src/hooks/useLeads.ts
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { Lead } from "@/entities/lead";
 import { LeadContagem } from "@/entities/leadsContagem";
 import { getLeads } from "@/features/leads/service/leadsService";
@@ -17,16 +17,22 @@ interface LeadsResponse {
     totalPages: number;
 }
 
-export function useLeads(
+export function usePollinglLeads(
     filters: Filters,
     activeTab: string,
     currentPage: number,
     pageSize: number
 ) {
-    // Define as query keys para invalidar e refazer fetch quando filtros mudarem
-    const queryKey = ["leads", filters, activeTab, currentPage];
+    const [errorCount, setErrorCount] = useState(0);
+    const [refetchEnabled, setRefetchEnabled] = useState(true);
+    const queryKey = ["leads", filters, activeTab, currentPage] as const;
 
-    const query = useQuery<LeadsResponse>({
+    const query: UseQueryResult<LeadsResponse, Error> = useQuery<
+        LeadsResponse,
+        Error,
+        LeadsResponse,
+        typeof queryKey
+    >({
         queryKey,
         queryFn: async () => {
             const params = {
@@ -49,17 +55,36 @@ export function useLeads(
                 totalPages: calcularContagem(contagemData, filters.interesse, pageSize),
             };
         },
-        refetchInterval: 15000, // 🔄 Polling a cada 15 segundos
-        refetchOnWindowFocus: true, // ✅ Revalida quando volta para a aba
-        retry: 2, // Tenta 2 vezes se der erro
+
+        refetchInterval: refetchEnabled ? 15000 : false,
+        retry: 2,
+        refetchOnWindowFocus: true,
     });
+
+    useEffect(() => {
+        // Se a query falhou
+        if (query.isError) {
+            setErrorCount(prev => prev + 1);
+        } else if (query.isSuccess) {
+            setErrorCount(0);
+        }
+    }, [query.isError, query.isSuccess]);
+
+    useEffect(() => {
+        if (errorCount >= 2) {
+            setRefetchEnabled(false);
+        } else {
+            setRefetchEnabled(true);
+        }
+    }, [errorCount, filters, activeTab, currentPage]);
+
 
     return {
         leads: query.data?.leads ?? [],
         leadsContagem: query.data?.leadsContagem,
         totalPages: query.data?.totalPages ?? 0,
-        loading: query.isLoading,
+        loading: query.isLoading || query.isFetching,
         errorBool: query.isError,
-        refetch: query.refetch, // pode usar manualmente se precisar
+        refetch: query.refetch,
     };
 }

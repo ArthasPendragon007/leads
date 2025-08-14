@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import {useEffect, useState} from "react";
 
 /**
  * Hook de debounce para atrasar a atualização de um valor.

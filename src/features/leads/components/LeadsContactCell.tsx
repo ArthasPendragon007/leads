@@ -1,8 +1,8 @@
 // @/components/leads/LeadsContactCell.tsx
-import { LeadsAvatar } from "@/components/leads/LeadsAvatar";
-import { CopyText } from "@/components/shared/CopyText";
-import { Lead } from "@/entities/lead";
-import { formatarCpfCnpj } from "@/lib/formatters/documentFormatters";
+import {LeadsAvatar} from "@/features/leads/components/LeadsAvatar";
+import {CopyText} from "@/components/shared/CopyText";
+import {Lead} from "@/entities/lead";
+import {formatarCpfCnpj} from "@/lib/formatters/documentFormatters";
 import React from "react";
 
 interface LeadsContactCellProps {

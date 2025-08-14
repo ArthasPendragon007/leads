@@ -1,5 +1,4 @@
-import { normalizarTexto } from "@/lib/formatters/stringFormatters";
-import React from "react";
+import {normalizarTexto} from "@/lib/formatters/stringFormatters";
 
 export function formatarFonteMeio(fonte?: string, meio?: string): string {
     if (!fonte && !meio) return "";

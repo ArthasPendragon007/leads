@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import {Dispatch, SetStateAction} from "react";
 
 /**
  * Atualiza um estado, reseta a página para 1 e executa um código extra opcional.

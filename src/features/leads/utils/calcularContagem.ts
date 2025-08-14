@@ -1,4 +1,4 @@
-import { LeadContagem } from "@/entities/leadsContagem";
+import {LeadContagem} from "@/entities/leadsContagem";
 
 export const calcularContagem = (
     contagem: LeadContagem | undefined,

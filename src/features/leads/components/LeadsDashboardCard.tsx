@@ -1,12 +1,8 @@
 "use client";
 
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-} from "@/components/ui/card";
-import { AnimatedNumber } from "@/components/shared/AnimatedNumber"; // Importe o novo componente
+import {Card, CardContent, CardDescription, CardHeader,} from "@/components/ui/card";
+import {AnimatedNumber} from "@/components/shared/AnimatedNumber";
+import React from "react"; // Importe o novo componente
 
 interface LeadsDashboardCardProps {
     icon?: React.ReactNode;

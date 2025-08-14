@@ -1,16 +1,15 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Lead } from "@/entities/lead";
+import {Card, CardContent} from "@/components/ui/card";
+import {Lead} from "@/entities/lead";
 import React from "react";
-import LeadsTableContent from "@/components/leads/LeadsTableContent";
-import { useLeadsColumns } from "@/features/leads/hooks/useLeadsColumns";
-import { SectionHeader } from "@/components/shared/SectionHeader";
+import LeadsTableContent from "@/features/leads/components/LeadsTableContent";
+import {useLeadsColumns} from "@/features/leads/hooks/useLeadsColumns";
+import {SectionHeader} from "@/components/shared/SectionHeader";
 
 interface LeadTableSectionProps {
     leads: Lead[];
     title?: string;
     subtitle?: string;
     total?: number;
-    onConcluir: () => void;
     ocultarParceiro?: boolean;
     loading?: boolean;
     error?: boolean;
@@ -23,7 +22,6 @@ export const LeadsTableSection: React.FC<LeadTableSectionProps> = ({
                                                                        leads,
                                                                        title = "- Leads",
                                                                        subtitle = "Todos os leads",
-                                                                       onConcluir,
                                                                        total,
                                                                        ocultarParceiro,
                                                                        loading = false,
@@ -49,7 +47,6 @@ export const LeadsTableSection: React.FC<LeadTableSectionProps> = ({
                         totalPages={totalPages}
                         currentPage={currentPage}
                         onPageChange={onPageChange}
-                        onConcluir={onConcluir}
                     />
                 </CardContent>
             </Card>

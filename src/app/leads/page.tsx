@@ -1,17 +1,15 @@
-// src/app/leads/page.tsx
 "use client";
 
-import { useState } from "react";
-import PaginationControls from "@/components/shared/PaginationControls";
-import LeadsDashboardCard from "@/components/leads/LeadsDashboardCard";
-import { LeadsFilters } from "@/components/leads/LeadsFilters";
-import { LeadsTableSection } from "@/components/leads/LeadsTableSection";
-import { TabType } from "@/entities/lead";
-import { Filters } from "@/features/leads/types";
-import { LeadContagem } from "@/entities/leadsContagem";
-import { Store, RefreshCcw, UserCheck } from "lucide-react";
-import { useLeads } from "@/features/leads/hooks/useLeads";
-import { handleGenericChange } from "@/lib/stateHelper";
+import {useState} from "react";
+import LeadsDashboardCard from "@/features/leads/components/LeadsDashboardCard";
+import {LeadsFilters} from "@/features/leads/components/LeadsFilters";
+import {LeadsTableSection} from "@/features/leads/components/LeadsTableSection";
+import {TabType} from "@/entities/lead";
+import {Filters} from "@/features/leads/types";
+import {LeadContagem} from "@/entities/leadsContagem";
+import {RefreshCcw, Store, UserCheck} from "lucide-react";
+import {usePollinglLeads} from "@/features/leads/hooks/usePollinglLeads";
+import {handleGenericChange} from "@/lib/stateHelper";
 
 const pageSize = 10;
 const ICON_SIZE = 20;
@@ -28,7 +26,7 @@ const Page: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
 
     // Usa o hook correto
-    const { leads, leadsContagem, totalPages, loading, errorBool, refetch } = useLeads(
+    const { leads, leadsContagem, totalPages, loading, errorBool, refetch } = usePollinglLeads(
         filters,
         activeTab,
         currentPage,
@@ -95,7 +93,6 @@ const Page: React.FC = () => {
             <div className="mt-6">
                 <LeadsTableSection
                     leads={leads}
-                    onConcluir={refetch}
                     total={totalAtual}
                     ocultarParceiro={filters.interesse === "Revenda"}
                     loading={loading}

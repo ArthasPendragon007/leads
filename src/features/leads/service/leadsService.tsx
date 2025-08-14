@@ -1,6 +1,6 @@
 // src/services/leadsService.ts
-import { apiLead } from "@/api/api_leads";
-import { AxiosRequestConfig } from "axios";
+import {apiLead} from "@/api/api_leads";
+import {AxiosRequestConfig} from "axios";
 
 /**
  * Função genérica para requisições à API de leads.

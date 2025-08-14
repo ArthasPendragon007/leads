@@ -1,51 +1,58 @@
-import { TableCell } from "@/components/ui/table";
-import { Lead } from "@/entities/lead";
-import React, { useState } from "react";
-import { putLeads } from "@/features/leads/service/leadsService";
-import { LeadsFonteMeioTag } from "@/components/leads/LeadsFonteMeioTag";
-import { LeadsParceiroField } from "@/components/leads/LeadsParceiroField";
-import { LeadsContactCell } from "./LeadsContactCell";
-import { LeadsInteresseCell } from "./LeadsInteresseCell";
-import { LeadsAcoesCell } from "./LeadsAcoesCell";
+// @/components/leads/LeadsCard.tsx
+import {TableCell} from "@/components/ui/table";
+import {Lead} from "@/entities/lead";
+import React, {useState, useEffect} from "react";
+
+// Importamos o hook de mutação
+import {useUpdateLead} from "@/features/leads/hooks/useUpdateLead";
+
+import {LeadsFonteMeioTag} from "@/features/leads/components/LeadsFonteMeioTag";
+import {LeadsParceiroField} from "@/features/leads/components/LeadsParceiroField";
+import {LeadsContactCell} from "./LeadsContactCell";
+import {LeadsInteresseCell} from "./LeadsInteresseCell";
+import {LeadsAcoesCell} from "./LeadsAcoesCell";
 
 interface DynamicColumn {
     id: string;
     label: string;
     width: number;
-    minWidth?: number; // largura mínima opcional
+    minWidth?: number;
     alignment?: string;
 }
 
 interface LeadsTableRowProps {
     lead: Lead;
-    onConcluir: () => void;
     dynamicColumns: DynamicColumn[];
 }
 
 const LeadsCard: React.FC<LeadsTableRowProps> = ({
-                                                     lead: initialLead,
-                                                     onConcluir,
+                                                     lead,
                                                      dynamicColumns,
                                                  }) => {
-    const [lead, setLead] = useState<Lead>(initialLead);
-    const [editandoParceiro, setEditandoParceiro] = useState(false);
-    const [valorParceiro, setValorParceiro] = useState(initialLead.parceiro || "");
+    // Inicializa a mutação, e passa um callback para fechar a edição no sucesso
+    const { mutate, isPending, isError } = useUpdateLead(() => {
+        setEditandoParceiro(false); // Fecha o modo de edição somente no sucesso da requisição
+    });
 
-    const handleChange = async (campo: keyof Lead, valor: any) => {
+    const [editandoParceiro, setEditandoParceiro] = useState(false);
+    const [valorParceiro, setValorParceiro] = useState(lead.parceiro || "");
+
+    useEffect(() => {
+        setValorParceiro(lead.parceiro || "");
+    }, [lead.parceiro]);
+
+    const handleChange = (campo: keyof Lead, valor: any) => {
         const leadAtualizado = { ...lead, [campo]: valor };
-        setLead(leadAtualizado);
-        try {
-            await putLeads("/atualizar", leadAtualizado);
-            onConcluir();
-        } catch (error) {
-            console.error("Erro ao atualizar lead:", error);
-            setLead(lead);
-        }
+        mutate(leadAtualizado);
     };
 
-    const salvarParceiro = async () => {
-        await handleChange("parceiro", valorParceiro);
-        setEditandoParceiro(false);
+    const salvarParceiro = () => {
+        handleChange("parceiro", valorParceiro);
+    };
+
+    const handleToggleStatus = (newStatus: "concluido" | "pendente") => {
+        const leadAtualizado = { ...lead, status: newStatus };
+        mutate(leadAtualizado);
     };
 
     const renderCampo = (valor?: string) => {
@@ -68,10 +75,12 @@ const LeadsCard: React.FC<LeadsTableRowProps> = ({
                     editandoParceiro={editandoParceiro}
                     setEditandoParceiro={setEditandoParceiro}
                     salvarParceiro={salvarParceiro}
+                    isPending={isPending}
+                    isError={isError}
                 />
             </div>
         ),
-        interesse: <LeadsInteresseCell lead={lead} onUpdate={handleChange} />,
+        interesse: <LeadsInteresseCell lead={lead} onUpdate={handleChange} disabled={isPending} />,
         data: renderCampo(
             lead.dataHora
                 ? new Date(lead.dataHora).toLocaleString("pt-BR", {
@@ -84,7 +93,13 @@ const LeadsCard: React.FC<LeadsTableRowProps> = ({
                 })
                 : ""
         ),
-        acoes: <LeadsAcoesCell lead={lead} onUpdate={handleChange} />,
+        acoes: (
+            <LeadsAcoesCell
+                lead={lead}
+                onToggleStatus={handleToggleStatus}
+                disabled={isPending}
+            />
+        ),
     };
 
     return (
@@ -95,7 +110,7 @@ const LeadsCard: React.FC<LeadsTableRowProps> = ({
                     className={`py-4 ${col.id === 'contato' ? 'pl-6' : 'text-center'} whitespace-nowrap`}
                     style={{
                         width: `${col.width}%`,
-                        minWidth: col.minWidth || 120 // evita colapso
+                        minWidth: col.minWidth || 120
                     }}
                 >
                     {columnContent[col.id as keyof typeof columnContent]}

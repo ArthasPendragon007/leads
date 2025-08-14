@@ -1,10 +1,10 @@
 import React from "react";
-import { LucideCircleCheckBig, Users } from "lucide-react";
-import { TabType } from "@/entities/lead";
-import { Filters } from "@/features/leads/types";
-import { SearchBar } from "@/components/shared/SearchBar";
-import { TabButton } from "./TabButton"; // Importa o novo componente
-import { FilterSelect } from "./FilterSelect"; // Importa o novo componente
+import {LucideCircleCheckBig, Users} from "lucide-react";
+import {TabType} from "@/entities/lead";
+import {Filters} from "@/features/leads/types";
+import {SearchBar} from "@/components/shared/SearchBar";
+import {TabButton} from "../../../components/shared/TabButton"; // Importa o novo componente
+import {FilterSelect} from "../../../components/shared/FilterSelect"; // Importa o novo componente
 
 
 interface LeadsFiltersProps {

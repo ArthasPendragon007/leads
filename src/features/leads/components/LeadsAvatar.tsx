@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {Avatar, AvatarFallback} from "@/components/ui/avatar";
 
 interface LeadsAvatarProps {
     nome?: string;

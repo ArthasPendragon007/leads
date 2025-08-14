@@ -1,8 +1,8 @@
 // @/components/shared/AnimatedNumber.tsx
 "use client";
 
-import React, { useEffect } from "react";
-import { animate, motion, useMotionValue, useTransform } from "framer-motion";
+import React, {useEffect} from "react";
+import {animate, motion, useMotionValue, useTransform} from "framer-motion";
 
 interface AnimatedNumberProps {
     value: string | number;
@@ -25,7 +25,7 @@ export const AnimatedNumber: React.FC<AnimatedNumberProps> = ({ value, tempo = 1
             });
             return controls.stop;
         }
-    }, [value, count, numericValue, isValidNumber]);
+    }, [value, count, numericValue, isValidNumber, tempo]);
 
     return (
         <>
