@@ -1,151 +1,112 @@
-"use client"
+// src/app/leads/page.tsx
+"use client";
 
+import { useState } from "react";
+import PaginationControls from "@/components/shared/PaginationControls";
+import LeadsDashboardCard from "@/components/leads/LeadsDashboardCard";
+import { LeadsFilters } from "@/components/leads/LeadsFilters";
+import { LeadsTableSection } from "@/components/leads/LeadsTableSection";
+import { TabType } from "@/entities/lead";
+import { Filters } from "@/features/leads/types";
+import { LeadContagem } from "@/entities/leadsContagem";
+import { Store, RefreshCcw, UserCheck } from "lucide-react";
+import { useLeads } from "@/features/leads/hooks/useLeads";
+import { handleGenericChange } from "@/lib/stateHelper";
 
-import PaginationControls from "@/components/shared/paginationControls";
-import {useCallback, useEffect, useState} from "react";
-import {Lead, TabType} from "@/entities/lead";
-import {LeadContagem} from "@/entities/leadsContagem";
-import {useOptimisticUpdate} from "@/hooks/useOptimisticUpdate";
-import {getLeads} from "@/features/leads/service/lead_service";
-import LeadsDashboardCard from "@/components/leads/dashboard";
-import {LeadsTabs} from "@/components/leads/tabs";
-import {LeadTableSection} from "@/components/leads/tablesection";
-
-interface Filters {
-    busca?: string
-    origem?: string
-    interesse?: string
-}
-
-const pageSize = 10
+const pageSize = 10;
+const ICON_SIZE = 20;
+const ICON_COLOR = "text-white";
+const ICON_BACKGROUND_COLOR = "bg-orange-400";
 
 const Page: React.FC = () => {
-    const [activeTab, setActiveTab] = useState<TabType>("pendentes")
+    const [activeTab, setActiveTab] = useState<TabType>("pendentes");
     const [filters, setFilters] = useState<Filters>({
         busca: "",
         origem: "todas-origens",
         interesse: "Revenda",
-    })
-    const [leads, setLeads] = useState<Lead[]>([])
-    const [loading, setLoading] = useState<boolean>(true)
-    const [leadsContagem, setLeadsContagem] = useState<LeadContagem>()
-    const [currentPage, setCurrentPage] = useState(1)
-    const [totalPages, setTotalPages] = useState(1)
+    });
+    const [currentPage, setCurrentPage] = useState(1);
 
-    const optimisticUpdate = useOptimisticUpdate<any>({
-        data: leads,
-        setData: setLeads,
-    })
+    // Usa o hook correto
+    const { leads, leadsContagem, totalPages, loading, errorBool, refetch } = useLeads(
+        filters,
+        activeTab,
+        currentPage,
+        pageSize
+    );
 
-    const handleTabChange = (tab: TabType): void => {
-        setActiveTab(tab)
-        setCurrentPage(1)
-    }
+    const handleChangeWithResetPage = <T,>(updater: React.Dispatch<React.SetStateAction<T>>, value: T) => {
+        handleGenericChange(updater, value);
+        setCurrentPage(1);
+    };
 
-    const handleGenericChange = useCallback(<T,>(updater: React.Dispatch<React.SetStateAction<T>>, value: T) => {
-        updater(value)
-        setCurrentPage(1)
-    }, [])
-
-    const calcularContagem = (contagem: LeadContagem | undefined): number => {
-        if (!contagem) return 1
-        const interesse = filters.interesse
-        const count =
-            interesse === "Revenda"
-                ? contagem.revenda
-                : interesse === "Utilização"
-                    ? contagem.utilizacao
-                    : contagem.ativo
-        return count ? Math.ceil(count / pageSize) : 1
-    }
-
-    const fetchLeads = async () => {
-        setLoading(true)
-
-        const params = {
-            PageNumber: currentPage,
-            PageSize: pageSize,
-            FiltroBusca: filters.busca,
-            FiltroFonte: filters.origem === "todas-origens" ? null : filters.origem,
-            FiltroInteresse: filters.interesse === "todos-tipos" ? null : filters.interesse,
-            FiltroStatus: activeTab === "concluidos" ? "concluido" : "pendente",
-        }
-
-        try {
-            const [data, contagem] = await Promise.all([
-                getLeads("/pegarTudoPaginado", params),
-                getLeads("/pegarDados", params),
-            ])
-
-            setLeads(data as Lead[])
-            setLeadsContagem(contagem as LeadContagem)
-            setTotalPages(calcularContagem(contagem as LeadContagem))
-        } catch (error) {
-            console.error("Erro ao buscar leads:", error)
-        } finally {
-            setLoading(false)
-        }
-    }
-
-    useEffect(() => {
-        fetchLeads()
-    }, [filters, activeTab, currentPage])
+    const interesseMap: Record<string, keyof LeadContagem> = {
+        Revenda: "revenda",
+        Utilização: "utilizacao",
+        default: "ativo",
+    };
 
     const totalAtual =
-        filters.interesse === "Revenda"
-            ? leadsContagem?.revenda
-            : filters.interesse === "Utilização"
-                ? leadsContagem?.utilizacao
-                : leadsContagem?.ativo
+        leadsContagem?.[interesseMap[filters.interesse] || interesseMap.default] ?? 0;
 
     return (
-        <main className="min-h-screen p-6 bg-gray-100">
-            <header className="p-2">
+        <main className="min-h-screen min-w-[450px] p-8 bg-gray-100 ">
+            <header className="mb-6">
                 <h1 className="text-3xl font-bold text-gray-900">Leads</h1>
                 <p className="text-gray-600 mt-1">
                     Gerencie e visualize todos os leads das suas campanhas
                 </p>
             </header>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Cards de contagem */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 <LeadsDashboardCard
+                    icon={<Store size={ICON_SIZE} className={ICON_COLOR} />}
                     subtitle={activeTab === "concluidos" ? "Leads Concluídos" : "Leads Ativos"}
                     value={leadsContagem?.ativo ?? 0}
+                    background={ICON_BACKGROUND_COLOR}
                 />
-                <LeadsDashboardCard subtitle="Leads Revenda" value={leadsContagem?.revenda ?? 0} />
-                <LeadsDashboardCard subtitle="Leads Utilização" value={leadsContagem?.utilizacao ?? 0} />
+
+                <LeadsDashboardCard
+                    icon={<RefreshCcw size={ICON_SIZE} className={ICON_COLOR} />}
+                    subtitle="Leads Revenda"
+                    value={leadsContagem?.revenda ?? 0}
+                    background={ICON_BACKGROUND_COLOR}
+                />
+                <LeadsDashboardCard
+                    icon={<UserCheck size={ICON_SIZE} className={ICON_COLOR} />}
+                    subtitle="Leads Utilização"
+                    value={leadsContagem?.utilizacao ?? 0}
+                    background={ICON_BACKGROUND_COLOR}
+                />
             </div>
 
-            <LeadsTabs
+            {/* Tabs e filtros */}
+            <LeadsFilters
                 activeTab={activeTab}
-                onChange={handleTabChange}
+                onChange={(newTab) => handleChangeWithResetPage<TabType>(setActiveTab, newTab)}
                 filters={filters}
-                onFilterChange={(newFilters) => handleGenericChange(setFilters, newFilters)}
-            />
-
-            <LeadTableSection
-                leads={leads}
-                onConcluir={(
-                        async () => {
-                            await fetchLeads()
-                        }
-                    )
+                onFilterChange={(newFilters) =>
+                    handleChangeWithResetPage<Filters>(setFilters, newFilters)
                 }
-                total={totalAtual}
-                ocultarParceiro={filters.interesse === "Revenda"}
             />
 
-            {totalPages > 1 && (
-                <div className="mt-6">
-                    <PaginationControls
-                        totalPages={totalPages}
-                        currentPage={currentPage}
-                        onPageChange={setCurrentPage}
-                    />
-                </div>
-            )}
+            {/* Tabela */}
+            <div className="mt-6">
+                <LeadsTableSection
+                    leads={leads}
+                    onConcluir={refetch}
+                    total={totalAtual}
+                    ocultarParceiro={filters.interesse === "Revenda"}
+                    loading={loading}
+                    totalPages={totalPages}
+                    currentPage={currentPage}
+                    onPageChange={setCurrentPage}
+                    error={errorBool}
+                />
+            </div>
         </main>
-    )
-}
+    );
+};
 
-export default Page
+export default Page;
