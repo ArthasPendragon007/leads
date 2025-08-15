@@ -31,11 +31,13 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
 
     if (totalPages <= 1) return null;
 
+    // Classes de botão comuns para Anterior e Próximo
+    const buttonBaseClasses = `cursor-pointer rounded-full text-gray-700 h-8 px-3 hover:bg-gray-200 transition-colors duration-200`;
+
     return (
         <div className="flex justify-center mt-6">
             <Pagination className="flex items-center">
                 <PaginationContent
-                    // Aumentei o gap e adicionei a sombra sutil
                     className="flex items-center gap-4 bg-gray-100 p-2 rounded-full w-fit shadow-sm"
                 >
                     {/* Botão Anterior */}
@@ -43,11 +45,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
                         <PaginationPrevious
                             onClick={() => onPageChange(currentPage - 1)}
                             aria-disabled={currentPage === 1}
-                            className={`
-                                cursor-pointer rounded-full text-gray-700 h-8 px-3 // Aumentei o px-2 para px-3
-                                hover:bg-gray-200 transition-colors duration-200
-                                ${currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-                            `}
+                            className={`${buttonBaseClasses} ${currentPage === 1 ? "pointer-events-none opacity-50" : ""}`}
                         />
                     </PaginationItem>
 
@@ -84,11 +82,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
                         <PaginationNext
                             onClick={() => onPageChange(currentPage + 1)}
                             aria-disabled={currentPage === totalPages}
-                            className={`
-                                cursor-pointer rounded-full text-gray-700 h-8 px-3 // Aumentei o px-2 para px-3
-                                hover:bg-gray-200 transition-colors duration-200
-                                ${currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
-                            `}
+                            className={`${buttonBaseClasses} ${currentPage === totalPages ? "pointer-events-none opacity-50" : ""}`}
                         />
                     </PaginationItem>
                 </PaginationContent>
