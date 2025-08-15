@@ -12,7 +12,7 @@ export interface DynamicColumn {
 }
 
 const columnLayouts = {
-    contato: { width: 30, minWidth: 600 },
+    contato: { width: 60, minWidth: 600 },
     origem: { width: 15, minWidth: 225 },
     anuncio: { width: 12, minWidth: 240 },
     parceiro: { width: 15, minWidth: 200 },

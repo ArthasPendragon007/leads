@@ -1,14 +1,16 @@
-// @/components/leads/LeadsCard.tsx
-import {TableCell} from "@/components/ui/table";
-import {Lead} from "@/entities/lead";
-import React, {useState, useEffect} from "react";
-import {useUpdateLead} from "@/features/leads/hooks/useUpdateLead";
+// @/components/leads/LeadsTableRow.tsx
+"use client";
 
-import {LeadsFonteMeioTag} from "@/features/leads/components/LeadsFonteMeioTag";
-import {LeadsParceiroField} from "@/features/leads/components/LeadsParceiroField";
-import {LeadsContactCell} from "./LeadsContactCell";
-import {LeadsInteresseCell} from "./LeadsInteresseCell";
-import {LeadsAcoesCell} from "./LeadsAcoesCell";
+import { TableCell } from "@/components/ui/table";
+import { Lead } from "@/entities/lead";
+import React, { useState, useEffect } from "react";
+import { useUpdateLead } from "@/features/leads/hooks/useUpdateLead";
+import { LeadsFonteMeioTag } from "@/features/leads/components/LeadsFonteMeioTag";
+import { LeadsParceiroField } from "@/features/leads/components/LeadsParceiroField";
+import { LeadsContactCell } from "./LeadsContactCell";
+import { LeadsInteresseCell } from "./LeadsInteresseCell";
+import { LeadsAcoesCell } from "./LeadsAcoesCell";
+import { motion } from "framer-motion"; // Mantive para a tipagem, mas o componente não renderiza motion.tr
 
 interface DynamicColumn {
     id: string;
@@ -23,20 +25,16 @@ interface LeadsTableRowProps {
     dynamicColumns: DynamicColumn[];
 }
 
-const LeadsCard: React.FC<LeadsTableRowProps> = ({
-                                                     lead,
-                                                     dynamicColumns,
-                                                 }) => {
-    // Inicializa a mutação, e passa um callback para fechar a edição no sucesso
+const LeadsTableRow: React.FC<LeadsTableRowProps> = ({
+                                                         lead,
+                                                         dynamicColumns,
+                                                     }) => {
+    const fecharEdicaoParceiro = () => setEditandoParceiro(false);
+
     const { mutate, isPending, isError } = useUpdateLead({
-        onSuccess: () => {
-            // A lógica de fechar a edição deve ser gerenciada pelo filho
-            // ou por um estado que o LeadsCard não gerencia mais de forma centralizada.
-            // Aqui, podemos apenas invalidar o cache.
-        },
+        onSuccess: fecharEdicaoParceiro,
     });
 
-    // ... (Estados e efeitos internos do LeadsCard)
     const [editandoParceiro, setEditandoParceiro] = useState(false);
     const [valorParceiro, setValorParceiro] = useState(lead.parceiro || "");
 
@@ -44,16 +42,12 @@ const LeadsCard: React.FC<LeadsTableRowProps> = ({
         setValorParceiro(lead.parceiro || "");
     }, [lead.parceiro]);
 
-    // O handleChange original precisa ser reescrito para passar o oldData
     const handleChange = (campo: keyof Lead, valor: any) => {
         const leadAtualizado = { ...lead, [campo]: valor };
-        // Agora o mutate recebe um objeto com oldData e newData
         mutate({ oldData: lead, newData: leadAtualizado });
     };
 
     const salvarParceiro = () => {
-        // A lógica de salvar o parceiro se torna mais simples e direta
-        // A função handleChange agora cuida da mutação completa
         handleChange("parceiro", valorParceiro);
     };
 
@@ -72,7 +66,7 @@ const LeadsCard: React.FC<LeadsTableRowProps> = ({
     const columnContent = {
         contato: <LeadsContactCell lead={lead} />,
         origem: <LeadsFonteMeioTag fonte={lead.fonte} meio={lead.meio} />,
-        anuncio: <span >{renderCampo(lead.anuncio)}</span>,
+        anuncio: <span>{renderCampo(lead.anuncio)}</span>,
         parceiro: (
             <div className="flex justify-center items-center">
                 <LeadsParceiroField
@@ -110,7 +104,10 @@ const LeadsCard: React.FC<LeadsTableRowProps> = ({
     };
 
     return (
-        <>
+        <tr
+            // layout // <-- A animação será gerenciada pelo componente pai
+            className="border-b align-middle hover:bg-gray-50 transition-colors duration-200"
+        >
             {dynamicColumns.map(col => (
                 <TableCell
                     key={col.id}
@@ -123,8 +120,8 @@ const LeadsCard: React.FC<LeadsTableRowProps> = ({
                     {columnContent[col.id as keyof typeof columnContent]}
                 </TableCell>
             ))}
-        </>
+        </tr>
     );
 };
 
-export default LeadsCard;
+export default LeadsTableRow;

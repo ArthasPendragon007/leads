@@ -1,14 +1,16 @@
 // components/leads/LeadsTableContent.tsx
+"use client";
+
 import { AnimatePresence, motion } from "framer-motion";
-import LeadsCard from "./LeadsCard";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StateMessage } from "@/components/shared/StateMessage";
 import PaginationControls from "@/components/shared/PaginationControls";
 import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import { Lead } from "@/entities/lead";
+import { Skeleton } from "@/components/ui/skeleton";
 import React from "react";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
-import { Skeleton } from "@/components/ui/skeleton"; // assume que você tenha um componente skeleton
+import LeadsTableRow from "@/features/leads/components/LeadsTableRow";
 
 interface LeadsTableContentProps {
     leads: Lead[];
@@ -30,7 +32,6 @@ export const LeadsTableContent: React.FC<LeadsTableContentProps> = ({
                                                                         onPageChange,
                                                                     }) => {
     const showLoading = useDelayedLoading(loading);
-
     const tableMinWidth = dynamicColumns.reduce((acc, c) => acc + (c.minWidth || 0), 0) || undefined;
 
     const fadeSlide = {
@@ -42,10 +43,31 @@ export const LeadsTableContent: React.FC<LeadsTableContentProps> = ({
 
     const skeletonRows = Array.from({ length: 5 });
 
+    const renderTableContent = () => {
+        if (showLoading) {
+            return skeletonRows.map((_, i) => (
+                <motion.tr
+                    key={i}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="border-b"
+                >
+                    <td colSpan={dynamicColumns.length} className="p-4">
+                        <Skeleton className="h-6 w-full rounded-md" />
+                    </td>
+                </motion.tr>
+            ));
+        }
+        return leads.map((lead) => (
+            // A animação de `motion.tr` será gerenciada aqui
+            <LeadsTableRow key={lead.id} lead={lead} dynamicColumns={dynamicColumns} />
+        ));
+    };
+
     return (
-        <div
-            className={`relative flex flex-col justify-center min-h-[200px]`}
-        >
+        <div className="relative flex flex-col justify-center">
             <AnimatePresence>
                 {error ? (
                     <motion.div key="error" {...fadeSlide}>
@@ -56,69 +78,30 @@ export const LeadsTableContent: React.FC<LeadsTableContentProps> = ({
                         <StateMessage type="empty" message="Não foi encontrado nada." />
                     </motion.div>
                 ) : (
-                    <motion.div key="list" {...fadeSlide}>
+                    <motion.div key="table" {...fadeSlide}>
                         <div className="overflow-x-auto">
-                            <Table
-                                className="table-fixed w-full"
-                                style={{ minWidth: tableMinWidth }}
-                            >
+                            <Table className="table-fixed w-full" style={{ minWidth: tableMinWidth }}>
                                 <TableHeader>
                                     <TableRow className="border-b border-gray-200">
-                                        {dynamicColumns.map(({ id, label, icon: colIcon, width, minWidth }) => (
+                                        {dynamicColumns.map(({ id, label, icon: colIcon, minWidth }) => (
                                             <TableHead
                                                 key={id}
-                                                className={`text-gray-600 font-medium py-4 ${
-                                                    id === "contato" ? "text-left pl-6" : "text-center"
+                                                className={`text-gray-600 font-medium py-2 ${
+                                                    id === "contato" ? "text-left pl-30" : "text-center" // <-- CLASSE CORRIGIDA AQUI
                                                 } whitespace-nowrap`}
-                                                style={{
-                                                    width: `${width}%`,
-                                                    minWidth: minWidth ? `${minWidth}px` : undefined,
-                                                }}
+                                                style={{ minWidth: minWidth ? `${minWidth}px` : undefined }}
                                             >
-                                                <div
-                                                    className={`flex items-center space-x-1 ${
-                                                        id === "contato" ? "justify-start" : "justify-center"
-                                                    }`}
-                                                >
-                                                    {colIcon}
+                                                <div className={`flex items-center ${id === "contato" ? "justify-start" : "justify-center"} flex-1`}>
+                                                    {colIcon && <span className="mr-1">{colIcon}</span>}
                                                     <span>{label}</span>
                                                 </div>
                                             </TableHead>
                                         ))}
                                     </TableRow>
                                 </TableHeader>
-
-                                <TableBody>
+                                <TableBody className={`relative`} style={{ minHeight: `${Math.max(leads.length, 5) * 50}px` }}>
                                     <AnimatePresence mode="popLayout">
-                                        {showLoading
-                                            ? skeletonRows.map((_, i) => (
-                                                <motion.tr
-                                                    key={i}
-                                                    layout
-                                                    initial={{ opacity: 0, y: -5 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    exit={{ opacity: 0, y: 5 }}
-                                                    transition={{ duration: 0.3 }}
-                                                    className="border-b"
-                                                >
-                                                    <td colSpan={dynamicColumns.length} className="p-4">
-                                                        <Skeleton className="h-6 w-full rounded-md" />
-                                                    </td>
-                                                </motion.tr>
-                                            ))
-                                            : leads.map((lead) => (
-                                                <motion.tr
-                                                    key={lead.id}
-                                                    layout
-                                                    initial={{ opacity: 0, y: -10 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    exit={{ opacity: 0, y: 10 }}
-                                                    transition={{ duration: 0.35, ease: [0.4, 0.0, 0.2, 1] }}
-                                                    className="border-b align-middle hover:bg-gray-50 transition-colors duration-200"
-                                                >
-                                                    <LeadsCard lead={lead} dynamicColumns={dynamicColumns} />
-                                                </motion.tr>
-                                            ))}
+                                        {renderTableContent()}
                                     </AnimatePresence>
                                 </TableBody>
                             </Table>
@@ -135,11 +118,7 @@ export const LeadsTableContent: React.FC<LeadsTableContentProps> = ({
                         transition={{ duration: 0.3 }}
                         className="mt-6"
                     >
-                        <PaginationControls
-                            totalPages={totalPages}
-                            currentPage={currentPage}
-                            onPageChange={onPageChange}
-                        />
+                        <PaginationControls totalPages={totalPages} currentPage={currentPage} onPageChange={onPageChange} />
                     </motion.div>
                 )}
             </AnimatePresence>
