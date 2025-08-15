@@ -10,7 +10,7 @@ import { LeadsParceiroField } from "@/features/leads/components/LeadsParceiroFie
 import { LeadsContactCell } from "./LeadsContactCell";
 import { LeadsInteresseCell } from "./LeadsInteresseCell";
 import { LeadsAcoesCell } from "./LeadsAcoesCell";
-import { motion } from "framer-motion"; // Mantive para a tipagem, mas o componente não renderiza motion.tr
+import { motion } from "framer-motion";
 
 interface DynamicColumn {
     id: string;
@@ -29,6 +29,7 @@ const LeadsTableRow: React.FC<LeadsTableRowProps> = ({
                                                          lead,
                                                          dynamicColumns,
                                                      }) => {
+    // Definimos um callback para fechar a edição
     const fecharEdicaoParceiro = () => setEditandoParceiro(false);
 
     const { mutate, isPending, isError } = useUpdateLead({
@@ -104,8 +105,13 @@ const LeadsTableRow: React.FC<LeadsTableRowProps> = ({
     };
 
     return (
-        <tr
-            // layout // <-- A animação será gerenciada pelo componente pai
+        <motion.tr
+            key={lead.id}
+            layout
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            transition={{ duration: 0.3 }}
             className="border-b align-middle hover:bg-gray-50 transition-colors duration-200"
         >
             {dynamicColumns.map(col => (
@@ -120,7 +126,7 @@ const LeadsTableRow: React.FC<LeadsTableRowProps> = ({
                     {columnContent[col.id as keyof typeof columnContent]}
                 </TableCell>
             ))}
-        </tr>
+        </motion.tr>
     );
 };
 
