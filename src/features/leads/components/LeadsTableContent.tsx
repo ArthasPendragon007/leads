@@ -8,6 +8,7 @@ import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import { Lead } from "@/entities/lead";
 import React from "react";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
+import { Skeleton } from "@/components/ui/skeleton"; // assume que você tenha um componente skeleton
 
 interface LeadsTableContentProps {
     leads: Lead[];
@@ -30,23 +31,22 @@ export const LeadsTableContent: React.FC<LeadsTableContentProps> = ({
                                                                     }) => {
     const showLoading = useDelayedLoading(loading);
 
-    // Define animação padrão
+    const tableMinWidth = dynamicColumns.reduce((acc, c) => acc + (c.minWidth || 0), 0) || undefined;
 
     const fadeSlide = {
         initial: { opacity: 0, y: 10 },
         animate: { opacity: 1, y: 0 },
         exit: { opacity: 0, y: -10 },
-        transition: { duration: 0.3}, // <-- seguro para TS
+        transition: { duration: 0.3 },
     };
 
+    const skeletonRows = Array.from({ length: 5 });
 
     return (
         <div
-            className={`relative flex flex-col justify-center ${
-                showLoading || leads.length === 0 ? "min-h-[200px]" : ""
-            }`}
+            className={`relative flex flex-col justify-center min-h-[200px]`}
         >
-            <AnimatePresence mode="wait">
+            <AnimatePresence>
                 {error ? (
                     <motion.div key="error" {...fadeSlide}>
                         <StateMessage type="error" message="Aconteceu um erro. Tente novamente mais tarde." />
@@ -59,11 +59,8 @@ export const LeadsTableContent: React.FC<LeadsTableContentProps> = ({
                     <motion.div key="list" {...fadeSlide}>
                         <div className="overflow-x-auto">
                             <Table
-                                className="table-fixed"
-                                style={{
-                                    minWidth:
-                                        dynamicColumns.reduce((acc, c) => acc + (c.minWidth || 0), 0) || undefined,
-                                }}
+                                className="table-fixed w-full"
+                                style={{ minWidth: tableMinWidth }}
                             >
                                 <TableHeader>
                                     <TableRow className="border-b border-gray-200">
@@ -93,22 +90,35 @@ export const LeadsTableContent: React.FC<LeadsTableContentProps> = ({
 
                                 <TableBody>
                                     <AnimatePresence mode="popLayout">
-                                        {leads.map((lead) => (
-                                            <motion.tr
-                                                key={lead.id}
-                                                layout
-                                                initial={{ opacity: 0, y: -10 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: 10 }}
-                                                transition={{ duration: 0.35, ease: [0.4, 0.0, 0.2, 1] }}
-                                                className="border-b align-middle hover:bg-gray-50 transition-colors duration-200"
-                                            >
-                                                <LeadsCard
-                                                    lead={lead}
-                                                    dynamicColumns={dynamicColumns}
-                                                />
-                                            </motion.tr>
-                                        ))}
+                                        {showLoading
+                                            ? skeletonRows.map((_, i) => (
+                                                <motion.tr
+                                                    key={i}
+                                                    layout
+                                                    initial={{ opacity: 0, y: -5 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, y: 5 }}
+                                                    transition={{ duration: 0.3 }}
+                                                    className="border-b"
+                                                >
+                                                    <td colSpan={dynamicColumns.length} className="p-4">
+                                                        <Skeleton className="h-6 w-full rounded-md" />
+                                                    </td>
+                                                </motion.tr>
+                                            ))
+                                            : leads.map((lead) => (
+                                                <motion.tr
+                                                    key={lead.id}
+                                                    layout
+                                                    initial={{ opacity: 0, y: -10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, y: 10 }}
+                                                    transition={{ duration: 0.35, ease: [0.4, 0.0, 0.2, 1] }}
+                                                    className="border-b align-middle hover:bg-gray-50 transition-colors duration-200"
+                                                >
+                                                    <LeadsCard lead={lead} dynamicColumns={dynamicColumns} />
+                                                </motion.tr>
+                                            ))}
                                     </AnimatePresence>
                                 </TableBody>
                             </Table>
@@ -130,14 +140,13 @@ export const LeadsTableContent: React.FC<LeadsTableContentProps> = ({
                             currentPage={currentPage}
                             onPageChange={onPageChange}
                         />
-                    </motion.div>)}
+                    </motion.div>
+                )}
             </AnimatePresence>
 
             <LoadingOverlay loading={showLoading} />
-
         </div>
     );
 };
-
 
 export default LeadsTableContent;

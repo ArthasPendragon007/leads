@@ -2,8 +2,6 @@
 import {TableCell} from "@/components/ui/table";
 import {Lead} from "@/entities/lead";
 import React, {useState, useEffect} from "react";
-
-// Importamos o hook de mutação
 import {useUpdateLead} from "@/features/leads/hooks/useUpdateLead";
 
 import {LeadsFonteMeioTag} from "@/features/leads/components/LeadsFonteMeioTag";
@@ -30,10 +28,15 @@ const LeadsCard: React.FC<LeadsTableRowProps> = ({
                                                      dynamicColumns,
                                                  }) => {
     // Inicializa a mutação, e passa um callback para fechar a edição no sucesso
-    const { mutate, isPending, isError } = useUpdateLead(() => {
-        setEditandoParceiro(false); // Fecha o modo de edição somente no sucesso da requisição
+    const { mutate, isPending, isError } = useUpdateLead({
+        onSuccess: () => {
+            // A lógica de fechar a edição deve ser gerenciada pelo filho
+            // ou por um estado que o LeadsCard não gerencia mais de forma centralizada.
+            // Aqui, podemos apenas invalidar o cache.
+        },
     });
 
+    // ... (Estados e efeitos internos do LeadsCard)
     const [editandoParceiro, setEditandoParceiro] = useState(false);
     const [valorParceiro, setValorParceiro] = useState(lead.parceiro || "");
 
@@ -41,18 +44,22 @@ const LeadsCard: React.FC<LeadsTableRowProps> = ({
         setValorParceiro(lead.parceiro || "");
     }, [lead.parceiro]);
 
+    // O handleChange original precisa ser reescrito para passar o oldData
     const handleChange = (campo: keyof Lead, valor: any) => {
         const leadAtualizado = { ...lead, [campo]: valor };
-        mutate(leadAtualizado);
+        // Agora o mutate recebe um objeto com oldData e newData
+        mutate({ oldData: lead, newData: leadAtualizado });
     };
 
     const salvarParceiro = () => {
+        // A lógica de salvar o parceiro se torna mais simples e direta
+        // A função handleChange agora cuida da mutação completa
         handleChange("parceiro", valorParceiro);
     };
 
     const handleToggleStatus = (newStatus: "concluido" | "pendente") => {
         const leadAtualizado = { ...lead, status: newStatus };
-        mutate(leadAtualizado);
+        mutate({ oldData: lead, newData: leadAtualizado });
     };
 
     const renderCampo = (valor?: string) => {
@@ -65,7 +72,7 @@ const LeadsCard: React.FC<LeadsTableRowProps> = ({
     const columnContent = {
         contato: <LeadsContactCell lead={lead} />,
         origem: <LeadsFonteMeioTag fonte={lead.fonte} meio={lead.meio} />,
-        anuncio: <span className="text-blue-600">{renderCampo(lead.anuncio)}</span>,
+        anuncio: <span >{renderCampo(lead.anuncio)}</span>,
         parceiro: (
             <div className="flex justify-center items-center">
                 <LeadsParceiroField

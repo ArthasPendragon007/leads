@@ -39,21 +39,21 @@ export const useLeadsColumns = (ocultarParceiro?: boolean) => {
             {
                 id: "origem",
                 label: "Origem",
-                icon: getIcon(Zap, "text-yellow-600"),
+                icon: getIcon(Zap, ),
                 width: columnLayouts.origem.width,
                 minWidth: columnLayouts.origem.minWidth,
             },
             {
                 id: "anuncio",
                 label: "Anúncio",
-                icon: getIcon(LucideMegaphone, "text-blue-500"),
+                icon: getIcon(LucideMegaphone, ),
                 width: columnLayouts.anuncio.width,
                 minWidth: columnLayouts.anuncio.minWidth,
             },
             {
                 id: "parceiro",
                 label: "Parceiro",
-                icon: getIcon(HandshakeIcon, "text-green-600"),
+                icon: getIcon(HandshakeIcon, ),
                 width: columnLayouts.parceiro.width,
                 minWidth: columnLayouts.parceiro.minWidth,
                 hide: ocultarParceiro,
@@ -61,7 +61,7 @@ export const useLeadsColumns = (ocultarParceiro?: boolean) => {
             {
                 id: "interesse",
                 label: "Interesse",
-                icon: getIcon(BriefcaseIcon, "text-yellow-500"),
+                icon: getIcon(BriefcaseIcon, ),
                 width: columnLayouts.interesse.width,
                 minWidth: columnLayouts.interesse.minWidth,
             },

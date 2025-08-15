@@ -3,6 +3,8 @@ import {GeistSans} from 'geist/font/sans'
 import {GeistMono} from 'geist/font/mono'
 import './globals.css'
 import ReactQueryProvider from './ReactQueryProvider'
+import {UndoManagerProvider} from "@/features/undo/hooks/useUndoManager";
+import {UndoFloatingButton} from "@/components/shared/UndoFloatingButton";
 
 export const metadata: Metadata = {
     title: 'Leads',
@@ -27,7 +29,10 @@ html {
         </head>
         <body>
         <ReactQueryProvider>
+        <UndoManagerProvider>
             {children}
+            <UndoFloatingButton />
+        </UndoManagerProvider>
         </ReactQueryProvider>
         </body>
         </html>

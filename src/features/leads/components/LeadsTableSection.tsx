@@ -31,7 +31,7 @@ export const LeadsTableSection: React.FC<LeadTableSectionProps> = ({
                                                                        onPageChange,
                                                                    }) => {
 
-    const dynamicColumns = useLeadsColumns(ocultarParceiro); // Use o hook customizado
+    const dynamicColumns = useLeadsColumns(ocultarParceiro);
 
     return (
         <div className="pt-6">
