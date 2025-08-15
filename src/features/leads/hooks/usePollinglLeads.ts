@@ -62,7 +62,6 @@ export function usePollinglLeads(
     });
 
     useEffect(() => {
-        // Se a query falhou
         if (query.isError) {
             setErrorCount(prev => prev + 1);
         } else if (query.isSuccess) {

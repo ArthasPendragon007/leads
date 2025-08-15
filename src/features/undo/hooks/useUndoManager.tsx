@@ -1,5 +1,3 @@
-// @/features/undo/hooks/useUndoManager.ts
-
 "use client";
 
 import { createContext, useContext, useState, ReactNode, useEffect, useCallback } from "react";
@@ -7,13 +5,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { putLeads } from "@/features/leads/service/leadsService";
 import { Lead } from "@/entities/lead";
 
-// --- Tipos ---
+// Ação que pode ser desfeita, com dados antigos e novos
 interface UndoableAction<T> {
     type: string;
     oldData: T;
     newData: T;
 }
 
+// Interface do Contexto
 interface UndoManagerContextType {
     lastAction: UndoableAction<any> | null;
     registerUndoableAction: <T>(action: UndoableAction<T>) => void;
@@ -35,8 +34,8 @@ interface UndoManagerProviderProps {
 }
 
 // --- Configuração de tempo ---
-const UNDO_VISIBLE_MS = 4000; // botão visível por 4s se não for clicado
-const ERROR_FEEDBACK_MS = 1500; // tempo para mostrar erro visual
+const UNDO_VISIBLE_MS = 4000;
+const ERROR_FEEDBACK_MS = 2000;
 
 export const UndoManagerProvider: React.FC<UndoManagerProviderProps> = ({ children }) => {
     const queryClient = useQueryClient();
@@ -44,13 +43,13 @@ export const UndoManagerProvider: React.FC<UndoManagerProviderProps> = ({ childr
     const [lastAction, setLastAction] = useState<UndoableAction<any> | null>(null);
     const [isError, setIsError] = useState(false);
 
-    // --- Executa o undo real ---
+    // --- Executa o undo real com o React Query ---
     const { mutate: mutateUndo, isPending: isUndoing } = useMutation({
         mutationFn: (data: Partial<Lead> & { id: string }) => putLeads("/atualizar", data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["leads"] });
-            // Some imediatamente após sucesso, sem feedback visual desnecessário
-            setLastAction(null);
+            setLastAction(null); // Esconde a ação de undo imediatamente
+            setIsError(false); // Limpa o estado de erro, se houver
         },
         onError: (error) => {
             console.error("Falha ao desfazer a operação:", error);
@@ -58,34 +57,38 @@ export const UndoManagerProvider: React.FC<UndoManagerProviderProps> = ({ childr
         },
     });
 
-    // --- Registra uma nova ação ---
+    // --- Registra e exibe a nova ação de undo ---
     const registerUndoableAction = useCallback(<T,>(action: UndoableAction<T>) => {
         setLastAction(action);
-        setIsError(false); // limpa estado anterior
+        setIsError(false);
     }, []);
 
-    // --- Executa o undo ---
+    // --- Executa o undo da última ação ---
     const undoLastAction = useCallback(() => {
         if (!lastAction || isUndoing) return;
         mutateUndo(lastAction.oldData);
     }, [lastAction, isUndoing, mutateUndo]);
 
-    // --- Remove botão após timeout se não for usado ---
+    // --- Gerencia o timeout para ocultar a UI de undo ou erro ---
     useEffect(() => {
-        if (!lastAction) return;
-        const timerId = setTimeout(() => setLastAction(null), UNDO_VISIBLE_MS);
-        return () => clearTimeout(timerId);
-    }, [lastAction]);
+        let timerId: NodeJS.Timeout | undefined;
 
-    // --- Feedback de erro temporário ---
-    useEffect(() => {
-        if (!isError) return;
-        const timerId = setTimeout(() => {
-            setIsError(false);
-            setLastAction(null); // esconde botão ao falhar
-        }, ERROR_FEEDBACK_MS);
-        return () => clearTimeout(timerId);
-    }, [isError]);
+        if (lastAction && !isError) {
+            timerId = setTimeout(() => setLastAction(null), UNDO_VISIBLE_MS);
+        } else if (isError) {
+            timerId = setTimeout(() => {
+                setIsError(false);
+                setLastAction(null);
+            }, ERROR_FEEDBACK_MS);
+        }
+
+        // Cleanup para evitar vazamentos de memória e comportamentos indesejados
+        return () => {
+            if (timerId) {
+                clearTimeout(timerId);
+            }
+        };
+    }, [lastAction, isError]);
 
     return (
         <UndoManagerContext.Provider

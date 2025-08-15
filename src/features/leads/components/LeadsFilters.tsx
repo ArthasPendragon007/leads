@@ -1,17 +1,21 @@
+// @/features/leads/components/LeadsFilters.tsx
+
 import React from "react";
 import {LucideCircleCheckBig, Users} from "lucide-react";
 import {TabType} from "@/entities/lead";
 import {Filters} from "@/features/leads/types";
 import {SearchBar} from "@/components/shared/SearchBar";
-import {TabButton} from "../../../components/shared/TabButton"; // Importa o novo componente
-import {FilterSelect} from "../../../components/shared/FilterSelect"; // Importa o novo componente
+import {TabButton} from "../../../components/shared/TabButton";
+import {FilterSelect} from "../../../components/shared/FilterSelect";
 
-
+// Interface corrigida para receber 'busca' e 'onSearchChange' separadamente
 interface LeadsFiltersProps {
     activeTab: TabType;
     onChange: (tab: TabType) => void;
-    filters: Filters;
-    onFilterChange: (filters: Filters) => void;
+    filters: Omit<Filters, "busca">;
+    onFilterChange: (filters: Omit<Filters, "busca">) => void;
+    busca: string;
+    onSearchChange: (newBusca: string) => void;
 }
 
 export const LeadsFilters: React.FC<LeadsFiltersProps> = ({
@@ -19,6 +23,8 @@ export const LeadsFilters: React.FC<LeadsFiltersProps> = ({
                                                               onChange,
                                                               filters,
                                                               onFilterChange,
+                                                              busca, // Recebe a busca
+                                                              onSearchChange, // Recebe o handler
                                                           }) => {
     return (
         <>
@@ -43,8 +49,8 @@ export const LeadsFilters: React.FC<LeadsFiltersProps> = ({
             {/* Filtros */}
             <div className="pt-4 flex flex-wrap gap-6">
                 <SearchBar
-                    value={filters.busca}
-                    onChange={(newBusca) => onFilterChange({ ...filters, busca: newBusca })}
+                    value={busca} // Use a prop 'busca'
+                    onChange={(newBusca) => onSearchChange(newBusca)} // Use a nova prop
                 />
                 <FilterSelect
                     value={filters.origem ?? "todas-origens"}

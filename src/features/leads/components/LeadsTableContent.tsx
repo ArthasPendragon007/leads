@@ -9,8 +9,6 @@ import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import { Lead } from "@/entities/lead";
 import React, { useEffect } from "react";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
-
-// Componentes recém-criados
 import { LeadsTableHeader } from "./LeadsTableHeader";
 import { LeadsTableBody } from "./LeadsTableBody";
 
@@ -52,7 +50,6 @@ export const LeadsTableContent: React.FC<LeadsTableContentProps> = ({
         }
     }, [currentPage]);
 
-    // Lógica para determinar o conteúdo principal
     const renderMainContent = () => {
         if (error) {
             return (
@@ -83,7 +80,7 @@ export const LeadsTableContent: React.FC<LeadsTableContentProps> = ({
     };
 
     return (
-        <div className="relative flex flex-col justify-center min-h-[300px]">
+        <div className="relative flex flex-col justify-center">
             <AnimatePresence>
                 {renderMainContent()}
             </AnimatePresence>

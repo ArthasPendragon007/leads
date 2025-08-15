@@ -1,7 +1,6 @@
 import React, {useMemo} from "react";
 import {BriefcaseIcon, Calendar, HandshakeIcon, LucideMegaphone, MoreVertical, Users, Zap,} from "lucide-react";
 
-// Interface para definir cada coluna
 export interface DynamicColumn {
     id: string;
     label: string;

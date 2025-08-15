@@ -65,7 +65,6 @@ export function LeadsParceiroField({
         )
     }
 
-    // Estado "Utilização"
     if (!ocultarParceiro && interesseLower === "utilizacao") {
         return (
             <div className="flex items-center gap-2">

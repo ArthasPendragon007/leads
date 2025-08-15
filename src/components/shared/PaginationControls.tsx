@@ -14,8 +14,8 @@ import React from "react";
 import {motion} from "framer-motion";
 import {usePagination} from "@/hooks/usePagination";
 
-const MotionPaginationLink = motion(PaginationLink);
 
+const MotionPaginationLink = motion.create(PaginationLink);
 interface PaginationControlsProps {
     totalPages: number;
     currentPage: number;

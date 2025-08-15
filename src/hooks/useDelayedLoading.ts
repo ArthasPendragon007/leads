@@ -1,18 +1,24 @@
-import { useEffect, useState } from "react";
+import { useState, useDeferredValue, useEffect } from "react";
 
-export function useDelayedLoading(loading: boolean, delay = 300) {
+/**
+ * Hook para atrasar a exibição de um estado de carregamento.
+ * Ideal para evitar o "flicker" quando o carregamento é muito rápido.
+ * Usa useDeferredValue para uma transição mais suave.
+ *
+ * @param loading O estado de carregamento original (true/false).
+ * @returns O estado de exibição atrasado.
+ */
+export function useDelayedLoading(loading: boolean) {
+    const deferredLoading = useDeferredValue(loading);
     const [show, setShow] = useState(false);
 
     useEffect(() => {
-        let timeout: NodeJS.Timeout;
-        if (loading) {
-
-            timeout = setTimeout(() => setShow(true), 100);
+        if (deferredLoading) {
+            setShow(true);
         } else {
-            timeout = setTimeout(() => setShow(false), delay);
+            setShow(false);
         }
-        return () => clearTimeout(timeout);
-    }, [loading, delay]);
+    }, [deferredLoading]);
 
     return show;
 }
