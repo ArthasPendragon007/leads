@@ -1,6 +1,7 @@
+// @/app/leads/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LeadsDashboardCard from "@/features/leads/components/LeadsDashboardCard";
 import { LeadsFilters } from "@/features/leads/components/LeadsFilters";
 import { LeadsTableSection } from "@/features/leads/components/LeadsTableSection";
@@ -10,6 +11,7 @@ import { LeadContagem } from "@/entities/leadsContagem";
 import { RefreshCcw, Store, UserCheck } from "lucide-react";
 import { usePollinglLeads } from "@/features/leads/hooks/usePollinglLeads";
 import { useDebounce } from "@/hooks/useDebounce";
+import { LeadsPageSkeleton } from "@/features/leads/components/LeadsPageSkeleton";
 
 const pageSize = 10;
 const ICON_SIZE = 20;
@@ -18,24 +20,49 @@ const ICON_BACKGROUND_COLOR = "bg-orange-400";
 
 const Page: React.FC = () => {
     const [busca, setBusca] = useState("");
-
     const [otherFilters, setOtherFilters] = useState<Omit<Filters, "busca">>({
         origem: "todas-origens",
         interesse: "Revenda",
     });
-
     const [activeTab, setActiveTab] = useState<TabType>("pendentes");
-
     const [currentPage, setCurrentPage] = useState(1);
+
+    // Novo estado para controlar se a busca inicial foi bem-sucedida
+    const [hasSuccessfullyFetched, setHasSuccessfullyFetched] = useState(false);
 
     const debouncedBusca = useDebounce(busca, 500);
 
-    const { leads, leadsContagem, totalPages, loading, errorBool} = usePollinglLeads(
+    const {
+        leads,
+        leadsContagem,
+        totalPages,
+        isFetching, // Usamos isFetching para detectar o fim de qualquer busca
+        errorBool,
+    } = usePollinglLeads(
         { ...otherFilters, busca: debouncedBusca },
         activeTab,
         currentPage,
         pageSize
     );
+
+    // ---------------------------------------------------------------------
+    // Efeito para rastrear o estado de carregamento e remover o esqueleto inicial
+    // ---------------------------------------------------------------------
+    useEffect(() => {
+        // Se uma busca não estiver em andamento e não houver erro,
+        // significa que os dados foram carregados com sucesso.
+        if (!isFetching && !errorBool) {
+            setHasSuccessfullyFetched(true);
+        }
+    }, [isFetching, errorBool]);
+
+    // ---------------------------------------------------------------------
+    // Lógica de Carregamento:
+    // O esqueleto da página só será renderizado se a busca inicial ainda não tiver sido concluída.
+    // ---------------------------------------------------------------------
+    if (!hasSuccessfullyFetched) {
+        return <LeadsPageSkeleton />;
+    }
 
     const handleTabChange = (newTab: TabType) => {
         setActiveTab(newTab);
@@ -51,7 +78,6 @@ const Page: React.FC = () => {
         setBusca(newBusca);
     };
 
-    // Lógica para o total atual
     const interesseMap: Record<string, keyof LeadContagem> = {
         Revenda: "revenda",
         Utilização: "utilizacao",
@@ -60,7 +86,7 @@ const Page: React.FC = () => {
     const totalAtual = leadsContagem?.[interesseMap[otherFilters.interesse] || interesseMap.default] ?? 0;
 
     return (
-        <main className="p-8 bg-gray-100 ">
+        <main className="min-h-screen min-w-[450px] p-8 bg-gray-100 ">
             <header className="mb-6">
                 <h1 className="text-3xl font-bold text-gray-900">Leads</h1>
                 <p className="text-gray-600 mt-1">
@@ -68,7 +94,6 @@ const Page: React.FC = () => {
                 </p>
             </header>
 
-            {/* Cards de contagem */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 <LeadsDashboardCard
                     icon={<Store size={ICON_SIZE} className={ICON_COLOR} />}
@@ -90,23 +115,21 @@ const Page: React.FC = () => {
                 />
             </div>
 
-            {/* Tabs e filtros */}
             <LeadsFilters
                 activeTab={activeTab}
                 onChange={handleTabChange}
                 filters={otherFilters}
                 onFilterChange={handleFilterChange}
-                busca={busca} // Novo prop
-                onSearchChange={handleSearchChange} // Novo prop
+                busca={busca}
+                onSearchChange={handleSearchChange}
             />
 
-            {/* Tabela */}
             <div className="mt-6">
                 <LeadsTableSection
                     leads={leads}
                     total={totalAtual}
                     ocultarParceiro={otherFilters.interesse === "Revenda"}
-                    loading={loading}
+                    loading={isFetching}
                     totalPages={totalPages}
                     currentPage={currentPage}
                     onPageChange={setCurrentPage}

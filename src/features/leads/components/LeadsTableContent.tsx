@@ -1,4 +1,4 @@
-// components/leads/LeadsTableContent.tsx
+// @/components/leads/LeadsTableContent.tsx
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
@@ -11,6 +11,7 @@ import React, { useEffect } from "react";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
 import { LeadsTableHeader } from "./LeadsTableHeader";
 import { LeadsTableBody } from "./LeadsTableBody";
+// O import de LeadsTableBodySkeleton foi removido
 
 interface LeadsTableContentProps {
     leads: Lead[];
@@ -31,6 +32,8 @@ export const LeadsTableContent: React.FC<LeadsTableContentProps> = ({
                                                                         currentPage,
                                                                         onPageChange,
                                                                     }) => {
+    // Usa useDelayedLoading para suavizar a transição de carregamento,
+    // garantindo que o overlay não apareça em buscas muito rápidas.
     const showLoading = useDelayedLoading(loading);
     const tableMinWidth = dynamicColumns.reduce((acc, c) => acc + (c.minWidth || 0), 0) || undefined;
 
@@ -59,7 +62,8 @@ export const LeadsTableContent: React.FC<LeadsTableContentProps> = ({
             );
         }
 
-        if (!loading && leads.length === 0) {
+        // Se não houver leads e não estiver carregando, mostra a mensagem de estado vazio.
+        if (leads.length === 0 && !showLoading) {
             return (
                 <motion.div key="empty" {...fadeSlide}>
                     <StateMessage type="empty" message="Não foi encontrado nada." />
@@ -67,8 +71,10 @@ export const LeadsTableContent: React.FC<LeadsTableContentProps> = ({
             );
         }
 
+        // Renderiza a tabela real com os dados, com o LoadingOverlay por cima se necessário
         return (
-            <motion.div key="table" {...fadeSlide}>
+            <motion.div key="table" {...fadeSlide} className="relative">
+                <LoadingOverlay loading={showLoading} />
                 <div className="overflow-x-auto">
                     <Table className="table-fixed w-full" style={{ minWidth: tableMinWidth }}>
                         <LeadsTableHeader dynamicColumns={dynamicColumns} />
@@ -97,8 +103,6 @@ export const LeadsTableContent: React.FC<LeadsTableContentProps> = ({
                     <PaginationControls totalPages={totalPages} currentPage={currentPage} onPageChange={onPageChange} />
                 </motion.div>
             )}
-
-            <LoadingOverlay loading={showLoading} />
         </div>
     );
 };

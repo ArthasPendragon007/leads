@@ -1,3 +1,4 @@
+// @/features/leads/hooks/usePollinglLeads.ts
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Lead } from "@/entities/lead";
@@ -25,7 +26,16 @@ export function usePollinglLeads(
 ) {
     const [errorCount, setErrorCount] = useState(0);
     const [refetchEnabled, setRefetchEnabled] = useState(true);
-    const queryKey = ["leads", filters, activeTab, currentPage] as const;
+
+    // Mude a definição da queryKey para usar as propriedades individuais dos filtros
+    const queryKey = [
+        "leads",
+        filters.busca,
+        filters.origem,
+        filters.interesse,
+        activeTab,
+        currentPage,
+    ] as const;
 
     const query: UseQueryResult<LeadsResponse, Error> = useQuery<
         LeadsResponse,
@@ -82,7 +92,8 @@ export function usePollinglLeads(
         leads: query.data?.leads ?? [],
         leadsContagem: query.data?.leadsContagem,
         totalPages: query.data?.totalPages ?? 0,
-        loading: query.isLoading || query.isFetching,
+        isInitialLoading: query.isInitialLoading,
+        isFetching: query.isFetching,
         errorBool: query.isError,
         refetch: query.refetch,
     };
