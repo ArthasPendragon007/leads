@@ -66,7 +66,7 @@ export function usePollinglLeads(
             };
         },
 
-        refetchInterval: refetchEnabled ? 15000 : false,
+        refetchInterval: refetchEnabled ? 100000 : false,
         retry: 2,
         refetchOnWindowFocus: true,
     });
