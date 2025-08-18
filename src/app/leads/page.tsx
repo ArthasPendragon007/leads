@@ -86,22 +86,22 @@ const Page: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 <LeadsDashboardCard
-                    icon={<Store size={ICON_SIZE} className="text-primary-foreground" />}
+                    icon={<Store size={ICON_SIZE} className={ICON_COLOR} />}
                     subtitle={activeTab === "concluidos" ? "Leads Concluídos" : "Leads Ativos"}
                     value={leadsContagem?.ativo ?? 0}
-                    background="bg-primary"
+                    background={ICON_BACKGROUND_COLOR}
                 />
                 <LeadsDashboardCard
-                    icon={<RefreshCcw size={ICON_SIZE} className="text-primary-foreground" />}
+                    icon={<RefreshCcw size={ICON_SIZE} className={ICON_COLOR} />}
                     subtitle="Leads Revenda"
                     value={leadsContagem?.revenda ?? 0}
-                    background="bg-primary"
+                    background={ICON_BACKGROUND_COLOR}
                 />
                 <LeadsDashboardCard
-                    icon={<UserCheck size={ICON_SIZE} className="text-primary-foreground" />}
+                    icon={<UserCheck size={ICON_SIZE} className={ICON_COLOR} />}
                     subtitle="Leads Utilização"
                     value={leadsContagem?.utilizacao ?? 0}
-                    background="bg-primary"
+                    background={ICON_BACKGROUND_COLOR}
                 />
             </div>
 
