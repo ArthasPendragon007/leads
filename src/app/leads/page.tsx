@@ -16,7 +16,6 @@ import { LeadsPageSkeleton } from "@/features/leads/components/LeadsPageSkeleton
 const pageSize = 10;
 const ICON_SIZE = 20;
 const ICON_COLOR = "text-white";
-const ICON_BACKGROUND_COLOR = "bg-orange-400";
 const ICON_BACKGROUND_COLOR = "bg-orange-400 dark:bg-blue-400";
 
 const Page: React.FC = () => {
@@ -28,7 +27,6 @@ const Page: React.FC = () => {
     const [activeTab, setActiveTab] = useState<TabType>("pendentes");
     const [currentPage, setCurrentPage] = useState(1);
 
-    // Novo estado para controlar se a busca inicial foi bem-sucedida
     const [hasSuccessfullyFetched, setHasSuccessfullyFetched] = useState(false);
 
     const debouncedBusca = useDebounce(busca, 500);
@@ -37,7 +35,6 @@ const Page: React.FC = () => {
         leads,
         leadsContagem,
         totalPages,
-        isFetching, // Usamos isFetching para detectar o fim de qualquer busca
         isFetching,
         errorBool,
     } = usePollinglLeads(
@@ -47,21 +44,12 @@ const Page: React.FC = () => {
         pageSize
     );
 
-    // ---------------------------------------------------------------------
-    // Efeito para rastrear o estado de carregamento e remover o esqueleto inicial
-    // ---------------------------------------------------------------------
     useEffect(() => {
-        // Se uma busca não estiver em andamento e não houver erro,
-        // significa que os dados foram carregados com sucesso.
         if (!isFetching && !errorBool) {
             setHasSuccessfullyFetched(true);
         }
     }, [isFetching, errorBool]);
 
-    // ---------------------------------------------------------------------
-    // Lógica de Carregamento:
-    // O esqueleto da página só será renderizado se a busca inicial ainda não tiver sido concluída.
-    // ---------------------------------------------------------------------
     if (!hasSuccessfullyFetched) {
         return <LeadsPageSkeleton />;
     }
@@ -88,11 +76,8 @@ const Page: React.FC = () => {
     const totalAtual = leadsContagem?.[interesseMap[otherFilters.interesse] || interesseMap.default] ?? 0;
 
     return (
-        <main className="min-h-screen min-w-[450px] p-8 bg-gray-100 ">
         <main className="min-h-screen min-w-[450px] p-8 bg-background">
             <header className="mb-6">
-                <h1 className="text-3xl font-bold text-gray-900">Leads</h1>
-                <p className="text-gray-600 mt-1">
                 <h1 className="text-3xl font-bold text-card-foreground">Leads</h1>
                 <p className="text-muted-foreground mt-1">
                     Gerencie e visualize todos os leads das suas campanhas
@@ -101,16 +86,22 @@ const Page: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 <LeadsDashboardCard
+                    icon={<Store size={ICON_SIZE} className="text-primary-foreground" />}
                     subtitle={activeTab === "concluidos" ? "Leads Concluídos" : "Leads Ativos"}
                     value={leadsContagem?.ativo ?? 0}
+                    background="bg-primary"
                 />
                 <LeadsDashboardCard
+                    icon={<RefreshCcw size={ICON_SIZE} className="text-primary-foreground" />}
                     subtitle="Leads Revenda"
                     value={leadsContagem?.revenda ?? 0}
+                    background="bg-primary"
                 />
                 <LeadsDashboardCard
+                    icon={<UserCheck size={ICON_SIZE} className="text-primary-foreground" />}
                     subtitle="Leads Utilização"
                     value={leadsContagem?.utilizacao ?? 0}
+                    background="bg-primary"
                 />
             </div>
 
@@ -138,4 +129,6 @@ const Page: React.FC = () => {
         </main>
     );
 };
+
+export default Page;
 
