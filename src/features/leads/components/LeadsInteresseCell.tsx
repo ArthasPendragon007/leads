@@ -15,15 +15,14 @@ export const LeadsInteresseCell: React.FC<LeadsInterestCellProps> = ({ lead, onU
         <Select
             value={limparTexto(lead.interesse?.toLowerCase() || "")}
             onValueChange={(value) => onUpdate("interesse", value)}
-            // Passamos a prop 'disabled' para o componente Select
             disabled={disabled}
         >
             <SelectTrigger
-                className={`px-4 py-1 text-sm rounded-full border transition-colors duration-200
+                className={`px-8 py-1 text-sm rounded-full border transition-colors duration-200
             ${
                     lead.interesse === "revenda"
-                        ? "border-blue-200 text-black bg-blue-50 hover:bg-blue-300"
-                        : "border-orange-200 text-black bg-orange-50 hover:bg-orange-300"
+                        ? "border-blue-200 text-foreground bg-blue-50 hover:bg-blue-300"
+                        : "border-orange-200 text-foreground bg-orange-50 hover:bg-orange-300"
                 }`}
             >
                 <SelectValue placeholder="Não informado" />

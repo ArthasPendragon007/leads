@@ -10,15 +10,14 @@ interface TabButtonProps {
 }
 
 const baseButton =
-    "w-[188px] bg-white border rounded-md text-sm transition-colors duration-200 hover:bg-gray-10 focus:ring-2 focus:ring-gray-300";
-const activeButton = "bg-black text-white hover:bg-gray-800";
-const inactiveButton =
-    "bg-white text-gray-600 hover:text-gray-900 hover:bg-gray-100";
+    "w-[188px] border rounded-md text-sm transition-colors duration-200 focus:ring-2 focus:ring-ring";
+const activeButton = "bg-[var(--active)] text-[var(--active-foreground)]";
+const inactiveButton = "bg-[var(--inactive)] text-[var(--inactive-foreground)]";
 
 export const TabButton = ({ isActive, onClick, icon: Icon, children }: TabButtonProps) => (
     <Button
         onClick={onClick}
-        className={`${baseButton} ${isActive ? activeButton : inactiveButton} `}
+        className={`${baseButton} ${isActive ? activeButton : inactiveButton} cursor-pointer `}
     >
         {Icon && <Icon className="h-4 w-4 mr-2" />}
         {children}

@@ -1,4 +1,6 @@
-import {Avatar, AvatarFallback} from "@/components/ui/avatar";
+// @/features/leads/components/LeadsAvatar.tsx
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import React from "react";
 
 interface LeadsAvatarProps {
     nome?: string;
@@ -16,11 +18,14 @@ function getInitials(nome?: string): string {
 }
 
 export function LeadsAvatar({ nome, interesse }: LeadsAvatarProps) {
-    const bgColor = interesse === "revenda" ? "bg-blue-400" : "bg-orange-400";
+    const bgColor =
+        interesse === "revenda"
+            ? "bg-[var(--revenda)] text-[var(--revenda-foreground)]"
+            : "bg-[var(--utilizacao)] text-[var(--utilizacao-foreground)]";
 
     return (
         <Avatar className="w-10 h-10">
-            <AvatarFallback className={`${bgColor} text-white font-medium`}>
+            <AvatarFallback className={`${bgColor} font-medium`}>
                 {getInitials(nome)}
             </AvatarFallback>
         </Avatar>

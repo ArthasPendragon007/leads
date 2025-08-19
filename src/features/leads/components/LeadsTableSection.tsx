@@ -9,26 +9,29 @@ interface LeadTableSectionProps {
     leads: Lead[];
     title?: string;
     subtitle?: string;
-    total?: number;
     ocultarParceiro?: boolean;
     loading?: boolean;
     error?: boolean;
     totalPages?: number;
     currentPage?: number;
     onPageChange?: (page: number) => void;
+    qntLeads?: number|string;
+    onRefetch?: () => void;
+
 }
 
 export const LeadsTableSection: React.FC<LeadTableSectionProps> = ({
                                                                        leads,
-                                                                       title = "- Leads",
+                                                                       title = "Leads",
                                                                        subtitle = "Todos os leads",
-                                                                       total,
                                                                        ocultarParceiro,
                                                                        loading = false,
                                                                        error = false,
                                                                        totalPages = 0,
                                                                        currentPage = 1,
                                                                        onPageChange,
+                                                                       qntLeads,
+                                                                       onRefetch,
                                                                    }) => {
 
     const dynamicColumns = useLeadsColumns(ocultarParceiro);
@@ -37,7 +40,7 @@ export const LeadsTableSection: React.FC<LeadTableSectionProps> = ({
         <div className="pt-6">
             <Card className="rounded-lg shadow-md relative overflow-hidden">
                 <CardContent className="p-6">
-                    <SectionHeader total={total} title={title} subtitle={subtitle} /> {/* Use o novo componente */}
+                    <SectionHeader title={title} subtitle={subtitle} number={qntLeads ?? 0} />
 
                     <LeadsTableContent
                         leads={leads}
@@ -47,6 +50,7 @@ export const LeadsTableSection: React.FC<LeadTableSectionProps> = ({
                         totalPages={totalPages}
                         currentPage={currentPage}
                         onPageChange={onPageChange}
+                        onRefetch={onRefetch}
                     />
                 </CardContent>
             </Card>

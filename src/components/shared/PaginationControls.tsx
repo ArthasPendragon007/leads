@@ -31,14 +31,13 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
 
     if (totalPages <= 1) return null;
 
-    // Classes de botão comuns para Anterior e Próximo
-    const buttonBaseClasses = `cursor-pointer rounded-full text-gray-700 h-8 px-3 hover:bg-gray-200 transition-colors duration-200`;
+    const buttonBaseClasses = `cursor-pointer rounded-full text-[var(--inactive-foreground)] h-8 px-3 hover:bg-[var(--pagination-control)] transition-colors duration-200`;
 
     return (
         <div className="flex justify-center mt-6">
             <Pagination className="flex items-center">
                 <PaginationContent
-                    className="flex items-center gap-4 bg-gray-100 p-2 rounded-full w-fit shadow-sm"
+                    className="flex items-center gap-4 bg-[var(--pagination-control)] p-2 rounded-full w-fit shadow-sm"
                 >
                     {/* Botão Anterior */}
                     <PaginationItem>
@@ -66,8 +65,8 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
                                         w-8 h-8 flex items-center justify-center rounded-full text-sm
                                         transition-all duration-200
                                         ${Number(page) === currentPage
-                                        ? "bg-white text-black font-bold shadow-sm"
-                                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-200"
+                                        ? "bg-white font-bold shadow-sm"
+                                        : "text-secondary hover:bg-gray-200"
                                     }
                                     `}
                                 >

@@ -17,7 +17,7 @@ export function LoadingOverlay({ loading, fullScreen = false }: LoadingOverlayPr
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
                     className={`absolute inset-0 flex items-center justify-center 
-                                bg-white/80 backdrop-blur-sm z-50 
+                                bg-background/80 backdrop-blur-sm z-50 
                                 ${fullScreen ? "fixed" : ""}`}
                 >
                     <motion.div

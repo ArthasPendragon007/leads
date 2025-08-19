@@ -36,7 +36,7 @@ html {
                     attribute="class"
                     defaultTheme="system"
                     enableSystem
-                    disableTransitionOnChange
+                    disableTransitionOnChange={false}
                 >
                     <div className="absolute top-8 right-8 z-50">
                         <ModeToggle />

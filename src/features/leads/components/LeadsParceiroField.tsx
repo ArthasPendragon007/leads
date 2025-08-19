@@ -47,13 +47,10 @@ export function LeadsParceiroField({
 
     useEffect(() => {
         if (isError) {
-            // Exibe a mensagem de erro.
-            // Ex: toast({ title: "Erro", description: "Falha ao salvar parceiro.", variant: "destructive" });
             console.error("Erro ao salvar parceiro.");
         }
     }, [isError]);
 
-    // Estado "Revenda"
     if (!ocultarParceiro && interesseLower === "revenda") {
         return (
             <div

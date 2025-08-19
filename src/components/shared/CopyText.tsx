@@ -26,7 +26,7 @@ export const CopyText: React.FC<CopyTextProps> = ({ text, className, position = 
                     {icon}
                 </span>
             )}
-            <span className="truncate max-w-[185px] text-gray-700 text-sm">{text}</span>
+            <span className="truncate max-w-[185px] text-card-foreground text-sm">{text}</span>
             {position === "right" && (
                 <span onClick={handleCopy} className="cursor-pointer">
                     {icon}

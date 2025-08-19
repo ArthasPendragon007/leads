@@ -59,9 +59,9 @@ const LeadsTableRow: React.FC<LeadsTableRowProps> = ({
 
     const renderCampo = (valor?: string) => {
         if (!valor?.trim()) {
-            return <span className="italic text-gray-400">Não informado</span>;
+            return <span className="italic text-muted-foreground">Não informado</span>;
         }
-        return <span>{valor}</span>;
+        return <span className="text-card-foreground">{valor}</span>;
     };
 
     const columnContent = {
@@ -112,7 +112,7 @@ const LeadsTableRow: React.FC<LeadsTableRowProps> = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
             transition={{ duration: 0.3 }}
-            className="border-b align-middle hover:bg-gray-50 transition-colors duration-200"
+            className="border-b border-border align-middle hover:bg-muted transition-colors duration-200"
         >
             {dynamicColumns.map(col => (
                 <TableCell

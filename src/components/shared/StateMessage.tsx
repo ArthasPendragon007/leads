@@ -1,5 +1,7 @@
+// @/components/shared/StateMessage.tsx
+
 import React from "react";
-import {AlertTriangle, SearchX} from "lucide-react";
+import { AlertTriangle, SearchX } from "lucide-react";
 import clsx from "clsx";
 
 interface StateMessageProps {
@@ -9,8 +11,10 @@ interface StateMessageProps {
 
 const iconStyles = {
     base: "w-12 h-12 p-3 rounded-lg mb-3",
-    error: "bg-red-100 text-red-600",
-    empty: "bg-blue-100 text-blue-600",
+
+    error: "bg-[var(--color-destructive)] text-[var(--color-destructive-foreground)]",
+
+    empty: "bg-[var(--revenda)] text-[var(--revenda-foreground)]",
 };
 
 export const StateMessage: React.FC<StateMessageProps> = ({ type, message }) => {
@@ -24,7 +28,10 @@ export const StateMessage: React.FC<StateMessageProps> = ({ type, message }) => 
             <p
                 className={clsx(
                     "text-base font-medium",
-                    type === "error" ? "text-red-600" : "text-blue-600"
+
+                    type === "error"
+                        ? "text-[var(--color-destructive-foreground)]"
+                        : "text-[var(--revenda-foreground)]"
                 )}
             >
                 {message}

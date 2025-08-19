@@ -21,7 +21,6 @@ export function SearchBar<T = string>({
                                           className = "",
                                       }: SearchBarProps<T>) {
     const [localValue, setLocalValue] = useState<T>(value as T ?? "" as any);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const debouncedValue = useDebounce(localValue, debounceDelay);
 
@@ -32,15 +31,12 @@ export function SearchBar<T = string>({
     }, [value]);
 
     useEffect(() => {
-        setIsLoading(true);
-
 
         if (debouncedValue !== value) {
             onChange(debouncedValue);
         }
 
-        setIsLoading(false);
-    }, [debouncedValue, onChange, value]);
+        }, [debouncedValue, onChange, value]);
 
 
     return (
@@ -52,10 +48,9 @@ export function SearchBar<T = string>({
                 value={localValue as any}
                 onChange={(e) => {
                     setLocalValue(e.target.value as any);
-                    setIsLoading(true);
                 }}
                 placeholder={placeholder}
-                className={`pl-10 bg-white ${isLoading ? 'border-primary' : ''}`} // Estilo para loading
+                className={`pl-10`}
             />
         </div>
     );

@@ -52,7 +52,6 @@ export const UndoManagerProvider: React.FC<UndoManagerProviderProps> = ({ childr
             setIsError(false); // Limpa o estado de erro, se houver
         },
         onError: (error) => {
-            console.error("Falha ao desfazer a operação:", error);
             setIsError(true);
         },
     });

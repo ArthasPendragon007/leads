@@ -1,4 +1,3 @@
-// @/components/leads/LeadsContactCell.tsx
 import {LeadsAvatar} from "@/features/leads/components/LeadsAvatar";
 import {CopyText} from "@/components/shared/CopyText";
 import {Lead} from "@/entities/lead";
@@ -13,9 +12,9 @@ export const LeadsContactCell: React.FC<LeadsContactCellProps> = ({ lead }) => (
     <div className="flex items-center space-x-3 text-left pl-6">
         <LeadsAvatar nome={lead.nome} interesse={lead.interesse} />
         <div className="space-y-2">
-            {lead.nome?.trim() && <CopyText text={lead.nome} className="font-semibold" />}
-            {lead.email?.trim() && <CopyText text={lead.email} />}
-            {lead.cnpj?.trim() && <CopyText text={formatarCpfCnpj(lead.cnpj)} />}
+            {lead.nome?.trim() && <CopyText text={lead.nome} className="font-semibold text-card-foreground" />}
+            {lead.email?.trim() && <CopyText text={lead.email} className="text-card-foreground" />}
+            {lead.cnpj?.trim() && <CopyText text={formatarCpfCnpj(lead.cnpj)} className="text-card-foreground" />}
         </div>
     </div>
 );

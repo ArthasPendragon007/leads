@@ -53,11 +53,11 @@ export const UndoFloatingButton: React.FC = () => {
                         onClick={undoLastAction}
                         disabled={isUndoing}
                         className={`flex items-center gap-2 rounded-full border shadow-md px-4 py-2 transition-colors
-                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400
+                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring
                         ${
                             isError
-                                ? "bg-red-600 hover:bg-red-500 text-white border-transparent"
-                                : "bg-white hover:bg-gray-100 text-gray-800 border-gray-300"
+                                ? "bg-destructive hover:bg-destructive/80 text-destructive-foreground border-transparent"
+                                : "bg-card hover:bg-muted text-card-foreground border-border"
                         }`}
                     >
                         {isUndoing ? (
@@ -68,9 +68,9 @@ export const UndoFloatingButton: React.FC = () => {
                             <CornerUpLeft className="h-5 w-5" />
                         )}
                         <span className="whitespace-nowrap text-sm font-medium">
-              Desfazer
-            </span>
-                        <span className="text-xs text-gray-400 ml-2">(CTRL+Z)</span>
+                            Desfazer
+                        </span>
+                        <span className="text-xs text-muted-foreground ml-2">(CTRL+Z)</span>
                     </Button>
                 </motion.div>
             )}

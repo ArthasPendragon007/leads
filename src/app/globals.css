@@ -8,20 +8,21 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
+  --primary: oklch(0 0 0 / 0.4); /* Laranja */
+  --primary-foreground: oklch(0 0 0 / 0.32); /* Cor escura para contraste */
+  --secondary: oklch(0.273 0 89.876);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --destructive: oklch(0.583 0.239 28.615 / 0.15);
+  --destructive-foreground: oklch(0.583 0.239 28.476 / 0.7);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
+
+--chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
@@ -35,8 +36,21 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --background: oklch(1 0 0);
+  --background: oklch(0.973 0 89.876);
   --foreground: oklch(0.145 0 0);
+  --active: oklch(0.205 0 0);
+  --active-foreground: oklch(0.985 0 0);
+  --inactive: oklch(0.97 0 0);
+  --inactive-foreground: oklch(0.556 0 0);
+  --pagination-control: oklch(0.97 0 0);
+  --active-pendente: oklch(0.796 0.203 91.135);
+  --active-hover-pendente: oklch(0.796 0.203 91.135 / 0.1);
+  --active-concluido: oklch(0.762 0.215 134.126);
+  --active-hover-concluido: oklch(0.62 0.097 152.102 / 0.1);
+  --utilizacao: oklch(0.742 0.179 56.739 / 0.2);
+  --utilizacao-foreground: oklch(0.742 0.179 56.785);
+  --revenda: oklch(0.7 0.157 253.212 / 0.2);
+  --revenda-foreground: oklch(0.7 0.157 253.212);
 }
 
 .dark {
@@ -46,16 +60,16 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
+  --primary: oklch(1 0 89.876 / 0.78); /* Azul */
+  --primary-foreground: oklch(1 0 89.876 / 0.4); /* Cor clara para contraste */
+  --secondary: oklch(0.811 0 89.876);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --destructive: oklch(0.628 0.258 29.013 / 0.2);
+  --destructive-foreground: oklch(0.638 0.237 25.436 / 0.7);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
@@ -72,6 +86,19 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --active: oklch(1 0 0);
+  --active-foreground: oklch(0.205 0 0);
+  --inactive: oklch(0.205 0 0);
+  --inactive-foreground: oklch(0.985 0 0);
+  --pagination-control: oklch(0.244 0 89.876);
+  --active-pendente: oklch(0.828 0.189 84.429);
+  --active-hover-pendente: oklch(0.828 0.189 84.429 / 0.1);
+  --active-concluido: oklch(0.605 0.178 146.454);
+  --active-hover-concluido: oklch(0.602 0.177 146.474 / 0.2);
+  --utilizacao: oklch(0.742 0.179 56.739 / 0.35);
+  --utilizacao-foreground: oklch(0.742 0.179 56.785);
+  --revenda: oklch(0.7 0.157 253.212 / 0.3);
+  --revenda-foreground: oklch(0.7 0.157 253.212);
 }
 
 @theme inline {
@@ -111,6 +138,19 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-active: var(--active);
+  --color-active-foreground: var(--active-foreground);
+  --color-inactive: var(--inactive);
+  --color-inactive-foreground: var(--inactive-foreground);
+  --color-pagination-control: var(--pagination-control);
+  --color-active-concluido: var(--active-concluido);
+  --color-active-hover-concluido: var(--active-hover-concluido);
+  --color-active-pendente: var(--active-pendente);
+  --color-active-hover-pendente: var(--active-hover-pendente);
+  --revenda: var(--revenda);
+  --revenda-foreground: var(--revenda-foreground);
+  --utilizacao: var(--utilizacao);
+  --utilizacao-foreground: var(--utilizacao-foreground);
 }
 
 @layer base {
@@ -120,4 +160,5 @@
   body {
     @apply bg-background text-foreground;
   }
+
 }

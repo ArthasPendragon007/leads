@@ -1,4 +1,4 @@
-// @/components/shared/AnimatedNumber.tsx
+// @/components/shared/AnimatedTypingNumber.tsx
 "use client";
 
 import React, {useEffect} from "react";
@@ -9,7 +9,7 @@ interface AnimatedNumberProps {
     tempo?: number;
 }
 
-export const AnimatedNumber: React.FC<AnimatedNumberProps> = ({ value, tempo = 1, }) => {
+export const AnimatedTypingNumber: React.FC<AnimatedNumberProps> = ({ value, tempo = 1, }) => {
     const numericValue = typeof value === 'number' ? value : parseFloat(String(value));
     const isValidNumber = !isNaN(numericValue);
 
@@ -20,7 +20,6 @@ export const AnimatedNumber: React.FC<AnimatedNumberProps> = ({ value, tempo = 1
         if (isValidNumber) {
             const controls = animate(count, numericValue, {
                 duration: tempo,
-                // Curva de easing personalizada para desacelerar no final
                 ease: [0.17, 0.67, 0.83, 0.67],
             });
             return controls.stop;

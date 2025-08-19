@@ -1,8 +1,7 @@
 export interface LeadContagem {
-    ativo: number
+    totalStatus: number
     revenda: number
     utilizacao: number
+    qntLeadsFiltrado: number
     pageTotal: number
-
 }
-

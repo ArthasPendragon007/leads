@@ -7,16 +7,13 @@ import { LeadsFilters } from "@/features/leads/components/LeadsFilters";
 import { LeadsTableSection } from "@/features/leads/components/LeadsTableSection";
 import { TabType } from "@/entities/lead";
 import { Filters } from "@/features/leads/types";
-import { LeadContagem } from "@/entities/leadsContagem";
 import { RefreshCcw, Store, UserCheck } from "lucide-react";
-import { usePollinglLeads } from "@/features/leads/hooks/usePollinglLeads";
+import { usePollingLeads } from "@/features/leads/hooks/usePollingLeads";
 import { useDebounce } from "@/hooks/useDebounce";
 import { LeadsPageSkeleton } from "@/features/leads/components/LeadsPageSkeleton";
 
 const pageSize = 10;
 const ICON_SIZE = 20;
-const ICON_COLOR = "text-white";
-const ICON_BACKGROUND_COLOR = "bg-orange-400 dark:bg-blue-400";
 
 const Page: React.FC = () => {
     const [busca, setBusca] = useState("");
@@ -28,27 +25,45 @@ const Page: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
 
     const [hasSuccessfullyFetched, setHasSuccessfullyFetched] = useState(false);
+    const [timeoutError, setTimeoutError] = useState(false);
 
     const debouncedBusca = useDebounce(busca, 500);
 
-    const {
-        leads,
-        leadsContagem,
-        totalPages,
-        isFetching,
-        errorBool,
-    } = usePollinglLeads(
-        { ...otherFilters, busca: debouncedBusca },
-        activeTab,
-        currentPage,
-        pageSize
-    );
+    const { leads, leadsContagem, totalPages, isFetching, error, refetch } =
+        usePollingLeads(
+            { ...otherFilters, busca: debouncedBusca },
+            activeTab,
+            currentPage,
+            pageSize
+        );
 
+    // Marca sucesso no primeiro fetch
     useEffect(() => {
-        if (!isFetching && !errorBool) {
+        if (!isFetching && !error && !hasSuccessfullyFetched) {
             setHasSuccessfullyFetched(true);
         }
-    }, [isFetching, errorBool]);
+    }, [isFetching, error, hasSuccessfullyFetched]);
+
+    // Timeout inicial para exibir erro de conexão
+    useEffect(() => {
+        let timeoutId: NodeJS.Timeout | null = null;
+
+        if (!hasSuccessfullyFetched) {
+            timeoutId = setTimeout(() => {
+                if (!hasSuccessfullyFetched && isFetching) {
+                    setTimeoutError(true);
+                }
+            }, 8000);
+        }
+
+        return () => {
+            if (timeoutId) clearTimeout(timeoutId);
+        };
+    }, [hasSuccessfullyFetched, isFetching]);
+
+    if (timeoutError) {
+    throw Error("Timeout erro na requisição da API")
+    }
 
     if (!hasSuccessfullyFetched) {
         return <LeadsPageSkeleton />;
@@ -66,14 +81,8 @@ const Page: React.FC = () => {
 
     const handleSearchChange = (newBusca: string) => {
         setBusca(newBusca);
+        setCurrentPage(1);
     };
-
-    const interesseMap: Record<string, keyof LeadContagem> = {
-        Revenda: "revenda",
-        Utilização: "utilizacao",
-        default: "ativo",
-    };
-    const totalAtual = leadsContagem?.[interesseMap[otherFilters.interesse] || interesseMap.default] ?? 0;
 
     return (
         <main className="min-h-screen min-w-[450px] p-8 bg-background">
@@ -85,24 +94,43 @@ const Page: React.FC = () => {
             </header>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+
                 <LeadsDashboardCard
-                    icon={<Store size={ICON_SIZE} className={ICON_COLOR} />}
+
+                    icon={<Store size={ICON_SIZE} className="text-[var(--revenda-foreground)]" />}
+
                     subtitle={activeTab === "concluidos" ? "Leads Concluídos" : "Leads Ativos"}
-                    value={leadsContagem?.ativo ?? 0}
-                    background={ICON_BACKGROUND_COLOR}
+
+                    value={leadsContagem?.totalStatus ?? 0}
+
+                    background="bg-[var(--revenda)]"
+
                 />
+
                 <LeadsDashboardCard
-                    icon={<RefreshCcw size={ICON_SIZE} className={ICON_COLOR} />}
+
+                    icon={<RefreshCcw size={ICON_SIZE} className="text-[var(--revenda-foreground)]" />}
+
                     subtitle="Leads Revenda"
+
                     value={leadsContagem?.revenda ?? 0}
-                    background={ICON_BACKGROUND_COLOR}
+
+                    background="bg-[var(--revenda)]"
+
                 />
+
                 <LeadsDashboardCard
-                    icon={<UserCheck size={ICON_SIZE} className={ICON_COLOR} />}
+
+                    icon={<UserCheck size={ICON_SIZE} className="text-[var(--revenda-foreground)]" />}
+
                     subtitle="Leads Utilização"
+
                     value={leadsContagem?.utilizacao ?? 0}
-                    background={ICON_BACKGROUND_COLOR}
+
+                    background="bg-[var(--revenda)]"
+
                 />
+
             </div>
 
             <LeadsFilters
@@ -117,13 +145,14 @@ const Page: React.FC = () => {
             <div className="mt-6">
                 <LeadsTableSection
                     leads={leads}
-                    total={totalAtual}
                     ocultarParceiro={otherFilters.interesse === "Revenda"}
                     loading={isFetching}
                     totalPages={totalPages}
+                    qntLeads={leadsContagem?.qntLeadsFiltrado}
                     currentPage={currentPage}
                     onPageChange={setCurrentPage}
-                    error={errorBool}
+                    error={error}
+                    onRefetch={refetch}
                 />
             </div>
         </main>
@@ -131,4 +160,3 @@ const Page: React.FC = () => {
 };
 
 export default Page;
-

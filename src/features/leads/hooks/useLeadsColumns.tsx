@@ -5,9 +5,9 @@ export interface DynamicColumn {
     id: string;
     label: string;
     icon?: React.ReactNode;
-    width: number;       // proporção inicial
-    minWidth?: number;   // largura mínima
-    hide?: boolean;      // usado para ocultar dinamicamente
+    width: number;
+    minWidth?: number;
+    hide?: boolean;
 }
 
 const columnLayouts = {
@@ -80,10 +80,8 @@ export const useLeadsColumns = (ocultarParceiro?: boolean) => {
             },
         ];
 
-        // Oculta colunas com hide=true
         const visibleColumns = baseColumns.filter(col => !col.hide);
 
-        // Calcula a largura proporcional baseada apenas nas colunas visíveis
         const totalVisibleWidth = visibleColumns.reduce(
             (sum, col) => sum + col.width,
             0
