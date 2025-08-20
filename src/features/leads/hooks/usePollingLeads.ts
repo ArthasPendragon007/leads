@@ -2,7 +2,7 @@
 "use client";
 
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Lead } from "@/entities/lead";
 import { LeadContagem } from "@/entities/leadsContagem";
 import { getLeads } from "@/features/leads/service/leadsService";
@@ -65,7 +65,8 @@ export function usePollingLeads(
     currentPage: number,
     pageSize: number
 ) {
-    const [errorCount, setErrorCount] = useState(0);
+    // Opcional: use o estado de erro para controlar o polling, se necessário
+    const [isPolling, setIsPolling] = useState(true);
 
     const queryKey = useMemo(
         () => ["leads", filters, activeTab, currentPage] as const,
@@ -75,21 +76,27 @@ export function usePollingLeads(
     const query: UseQueryResult<LeadsResponse, Error> = useQuery({
         queryKey,
         queryFn: () => fetchLeadsData(filters, activeTab, currentPage, pageSize),
-        refetchInterval: errorCount >= 1 ? false : 1500, // polling com delay maior
-        retry:2,
+        // O refetchInterval pode ser uma função para maior controle.
+        // Ele pode, por exemplo, aumentar o intervalo em caso de erro.
+        refetchInterval: isPolling ? 15000 : false,
         refetchOnWindowFocus: true,
-        enabled: pageSize > 0, // evita chamadas desnecessárias
-
-        onError: () => setErrorCount((prev) => prev + 1),
-        onSuccess: () => setErrorCount(0),
+        enabled: pageSize > 0 && isPolling,
     });
+
+    useEffect(() => {
+        if (query.isError) {
+            setIsPolling(false); // Para o polling em caso de erro
+        } else if (query.isSuccess) {
+            setIsPolling(true); // Restaura o polling se a busca for bem-sucedida
+        }
+    }, [query.isError, query.isSuccess, query.error]);
 
     return {
         leads: query.data?.leads ?? [],
         leadsContagem: query.data?.leadsContagem,
         totalPages: query.data?.totalPages ?? 0,
         isFetching: query.isFetching,
-        error: query.isError,
+        isError: query.isError,
         refetch: query.refetch,
     };
 }

@@ -1,7 +1,7 @@
 // @/app/leads/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import LeadsDashboardCard from "@/features/leads/components/LeadsDashboardCard";
 import { LeadsFilters } from "@/features/leads/components/LeadsFilters";
 import { LeadsTableSection } from "@/features/leads/components/LeadsTableSection";
@@ -29,7 +29,7 @@ const Page: React.FC = () => {
 
     const debouncedBusca = useDebounce(busca, 500);
 
-    const { leads, leadsContagem, totalPages, isFetching, error, refetch } =
+    const { leads, leadsContagem, totalPages, isFetching, isError, refetch } =
         usePollingLeads(
             { ...otherFilters, busca: debouncedBusca },
             activeTab,
@@ -39,10 +39,10 @@ const Page: React.FC = () => {
 
     // Marca sucesso no primeiro fetch
     useEffect(() => {
-        if (!isFetching && !error && !hasSuccessfullyFetched) {
+        if (!isFetching && !isError && !hasSuccessfullyFetched) {
             setHasSuccessfullyFetched(true);
         }
-    }, [isFetching, error, hasSuccessfullyFetched]);
+    }, [isFetching, isError, hasSuccessfullyFetched]);
 
     // Timeout inicial para exibir erro de conexão
     useEffect(() => {
@@ -151,7 +151,7 @@ const Page: React.FC = () => {
                     qntLeads={leadsContagem?.qntLeadsFiltrado}
                     currentPage={currentPage}
                     onPageChange={setCurrentPage}
-                    error={error}
+                    error={isError}
                     onRefetch={refetch}
                 />
             </div>
