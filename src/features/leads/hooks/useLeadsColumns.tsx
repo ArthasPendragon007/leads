@@ -1,7 +1,6 @@
 import React, {useMemo} from "react";
 import {BriefcaseIcon, Calendar, HandshakeIcon, LucideMegaphone, MoreVertical, Users, Zap,} from "lucide-react";
 
-// Metadados das colunas
 const columnMeta = {
     contato: { label: "Contato", icon: <Users className="w-4 h-4" />, width: 40, minWidth: 1 },
     origem: { label: "Origem", icon: <Zap className="w-4 h-4" />, width: 20, minWidth: 10 },

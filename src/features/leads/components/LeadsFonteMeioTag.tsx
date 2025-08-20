@@ -1,4 +1,3 @@
-// src/components/leads/LeadsFonteMeioTag.tsx
 import {formatarFonteMeio} from "@/lib/formatters";
 import React from "react";
 

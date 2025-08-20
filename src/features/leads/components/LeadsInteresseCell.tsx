@@ -1,4 +1,3 @@
-// @/components/leads/LeadsInteresseCell.tsx
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Lead} from "@/entities/lead";
 import {limparTexto} from "@/lib/formatters/stringFormatters";

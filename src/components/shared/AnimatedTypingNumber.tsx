@@ -1,4 +1,3 @@
-// @/components/shared/AnimatedTypingNumber.tsx
 "use client";
 
 import React, {useEffect} from "react";

@@ -1,4 +1,3 @@
-// components/shared/LoadingOverlay.tsx
 import {AnimatePresence, motion} from "framer-motion";
 
 interface LoadingOverlayProps {

@@ -1,4 +1,3 @@
-// @/features/leads/hooks/usePollingLeads.ts
 "use client";
 
 import {useQuery, UseQueryResult} from "@tanstack/react-query";

@@ -3,10 +3,10 @@
  */
 export function limparTexto(texto: string): string {
     return texto
-        .normalize("NFD")                    // Separa acentos
-        .replace(/[\u0300-\u036f]/g, "")     // Remove acentos
-        .replace(/ç/gi, "c")                 // Trata ç/Ç
-        .replace(/[^a-z0-9 ]/gi, "");        // Remove caracteres especiais
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/ç/gi, "c")
+        .replace(/[^a-z0-9 ]/gi, "");
 }
 
 /**

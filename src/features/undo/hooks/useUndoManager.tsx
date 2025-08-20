@@ -5,14 +5,12 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {putLeads} from "@/features/leads/service/leadsService";
 import {Lead} from "@/entities/lead";
 
-// Ação que pode ser desfeita, com dados antigos e novos
 interface UndoableAction<T> {
     type: string;
     oldData: T;
     newData: T;
 }
 
-// Interface do Contexto
 interface UndoManagerContextType {
     lastAction: UndoableAction<any> | null;
     registerUndoableAction: <T>(action: UndoableAction<T>) => void;

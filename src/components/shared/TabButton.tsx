@@ -1,4 +1,3 @@
-// @/components/leads/TabButton.tsx
 import React, {ReactNode} from "react";
 import {Button} from "@/components/ui/button";
 

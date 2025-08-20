@@ -1,5 +1,3 @@
-// @/features/leads/components/LeadsFilters.tsx
-
 import React from "react";
 import {LucideCircleCheckBig, Users} from "lucide-react";
 import {TabType} from "@/entities/lead";
