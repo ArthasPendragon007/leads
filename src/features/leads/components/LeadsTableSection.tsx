@@ -23,7 +23,7 @@ interface LeadTableSectionProps {
 export const LeadsTableSection: React.FC<LeadTableSectionProps> = ({
                                                                        leads,
                                                                        title = "Leads",
-                                                                       subtitle = "Todos os leads",
+                                                                       subtitle = "Leads por filtro ",
                                                                        ocultarParceiro,
                                                                        loading = false,
                                                                        error = false,

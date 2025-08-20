@@ -1,5 +1,5 @@
 // @/features/leads/components/LeadsAvatar.tsx
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {Avatar, AvatarFallback} from "@/components/ui/avatar";
 import React from "react";
 
 interface LeadsAvatarProps {

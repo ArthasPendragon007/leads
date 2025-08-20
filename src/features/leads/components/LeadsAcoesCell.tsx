@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Check, RotateCw, Loader2 } from "lucide-react";
-import { Lead } from "@/entities/lead";
+import {Button} from "@/components/ui/button";
+import {Check, Loader2, RotateCw} from "lucide-react";
+import {Lead} from "@/entities/lead";
 import React from "react";
 
 interface LeadsActionsCellProps {
@@ -17,11 +17,11 @@ export const LeadsAcoesCell: React.FC<LeadsActionsCellProps> = ({
     <Button
         size="sm"
         variant="ghost"
-        className={
+        className={`cursor-pointer ${
             lead.status === "concluido"
                 ? "text-active-pendente hover:bg-active-hover-pendente hover:text-active-pendente dark:hover:bg-active-hover-pendente"
                 : "text-active-concluido hover:bg-active-hover-concluido hover:text-active-concluido dark:hover:bg-active-hover-concluido"
-        }
+        }`}
         onClick={() =>
             onToggleStatus(lead.status === "concluido" ? "pendente" : "concluido")
         }

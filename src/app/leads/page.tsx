@@ -1,16 +1,16 @@
 // @/app/leads/page.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import LeadsDashboardCard from "@/features/leads/components/LeadsDashboardCard";
-import { LeadsFilters } from "@/features/leads/components/LeadsFilters";
-import { LeadsTableSection } from "@/features/leads/components/LeadsTableSection";
-import { TabType } from "@/entities/lead";
-import { Filters } from "@/features/leads/types";
-import { RefreshCcw, Store, UserCheck } from "lucide-react";
-import { usePollingLeads } from "@/features/leads/hooks/usePollingLeads";
-import { useDebounce } from "@/hooks/useDebounce";
-import { LeadsPageSkeleton } from "@/features/leads/components/LeadsPageSkeleton";
+import {LeadsFilters} from "@/features/leads/components/LeadsFilters";
+import {LeadsTableSection} from "@/features/leads/components/LeadsTableSection";
+import {TabType} from "@/entities/lead";
+import {Filters} from "@/features/leads/types";
+import {RefreshCcw, Store, UserCheck} from "lucide-react";
+import {usePollingLeads} from "@/features/leads/hooks/usePollingLeads";
+import {useDebounce} from "@/hooks/useDebounce";
+import {LeadsPageSkeleton} from "@/features/leads/components/LeadsPageSkeleton";
 
 const pageSize = 10;
 const ICON_SIZE = 20;
@@ -111,7 +111,7 @@ const Page: React.FC = () => {
 
                     icon={<RefreshCcw size={ICON_SIZE} className="text-[var(--revenda-foreground)]" />}
 
-                    subtitle="Leads Revenda"
+                    subtitle={activeTab === "concluidos" ? "Leads Concluídos Revenda" : "Leads de Revenda Ativos" }
 
                     value={leadsContagem?.revenda ?? 0}
 
@@ -123,7 +123,7 @@ const Page: React.FC = () => {
 
                     icon={<UserCheck size={ICON_SIZE} className="text-[var(--revenda-foreground)]" />}
 
-                    subtitle="Leads Utilização"
+                    subtitle={activeTab === "concluidos" ? "Leads Concluídos Utilização" : "Leads de Utilização Ativos" }
 
                     value={leadsContagem?.utilizacao ?? 0}
 

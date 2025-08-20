@@ -1,7 +1,7 @@
 // @/features/leads/components/LeadsPageSkeleton.tsx
 "use client";
 
-import { Skeleton } from "@/components/ui/skeleton";
+import {Skeleton} from "@/components/ui/skeleton";
 import React from "react";
 
 export const LeadsPageSkeleton: React.FC = () => {
@@ -61,7 +61,6 @@ export const LeadsPageSkeleton: React.FC = () => {
                             </div>
                         ))}
                     </div>
-                    {/* Corpo da tabela (linhas) */}
                     {[...Array(10)].map((_, idx) => (
                         <div key={idx} className="flex border-b border-border align-middle hover:bg-muted transition-colors duration-200 last:border-b-0">
                             {/* Célula de Contato */}

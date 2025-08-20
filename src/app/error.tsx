@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { TriangleAlert, WifiOff } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import {TriangleAlert, WifiOff} from "lucide-react";
+import {Button} from "@/components/ui/button";
+import {useState} from "react";
 
 interface ErrorProps {
     error: Error & { digest?: string };

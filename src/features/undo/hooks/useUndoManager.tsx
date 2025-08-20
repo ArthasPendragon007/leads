@@ -1,9 +1,9 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode, useEffect, useCallback } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { putLeads } from "@/features/leads/service/leadsService";
-import { Lead } from "@/entities/lead";
+import {createContext, ReactNode, useCallback, useContext, useEffect, useState} from "react";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {putLeads} from "@/features/leads/service/leadsService";
+import {Lead} from "@/entities/lead";
 
 // Ação que pode ser desfeita, com dados antigos e novos
 interface UndoableAction<T> {

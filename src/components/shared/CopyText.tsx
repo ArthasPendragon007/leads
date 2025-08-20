@@ -1,6 +1,6 @@
-import { Check, Copy } from "lucide-react";
-import React, { useState } from "react";
-import { cn } from "@/lib/utils";
+import {Check, Copy} from "lucide-react";
+import React, {useState} from "react";
+import {cn} from "@/lib/utils";
 
 interface CopyTextProps {
     text: string;
@@ -26,7 +26,7 @@ export const CopyText: React.FC<CopyTextProps> = ({ text, className, position = 
                     {icon}
                 </span>
             )}
-            <span className="truncate max-w-[185px] text-card-foreground text-sm">{text}</span>
+            <span className="truncate max-w-[200] text-card-foreground text-sm">{text}</span>
             {position === "right" && (
                 <span onClick={handleCopy} className="cursor-pointer">
                     {icon}

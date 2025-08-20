@@ -1,7 +1,7 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { putLeads } from "@/features/leads/service/leadsService";
-import { Lead } from "@/entities/lead";
-import { useUndoManager } from "@/features/undo/hooks/useUndoManager";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {putLeads} from "@/features/leads/service/leadsService";
+import {Lead} from "@/entities/lead";
+import {useUndoManager} from "@/features/undo/hooks/useUndoManager";
 
 interface LeadMutationPayload {
     oldData: Lead

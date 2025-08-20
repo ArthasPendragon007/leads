@@ -1,7 +1,7 @@
 // @/components/shared/StateMessage.tsx
 
 import React from "react";
-import { AlertTriangle, SearchX } from "lucide-react";
+import {AlertTriangle, SearchX} from "lucide-react";
 import clsx from "clsx";
 
 interface StateMessageProps {

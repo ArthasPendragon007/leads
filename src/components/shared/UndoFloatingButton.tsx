@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
-import { useUndoManager } from "@/features/undo/hooks/useUndoManager";
-import { Button } from "@/components/ui/button";
-import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, X, CornerUpLeft } from "lucide-react";
+import {useCallback, useEffect} from "react";
+import {useUndoManager} from "@/features/undo/hooks/useUndoManager";
+import {Button} from "@/components/ui/button";
+import {AnimatePresence, motion} from "framer-motion";
+import {CornerUpLeft, Loader2, X} from "lucide-react";
 
 const containerVariants = {
     hidden: { opacity: 0, y: 32, scale: 0.9, transition: { duration: 0.2 } },

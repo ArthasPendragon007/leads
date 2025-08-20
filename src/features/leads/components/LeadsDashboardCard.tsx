@@ -1,7 +1,6 @@
 "use client";
 
 import {Card, CardContent, CardDescription, CardHeader,} from "@/components/ui/card";
-import {AnimatedTypingNumber} from "@/components/shared/AnimatedTypingNumber";
 import React from "react";
 import {AnimatedBlurNumber} from "@/components/shared/AnimatedBlurNumber";
 

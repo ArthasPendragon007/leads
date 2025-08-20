@@ -9,7 +9,7 @@ interface LeadsContactCellProps {
 }
 
 export const LeadsContactCell: React.FC<LeadsContactCellProps> = ({ lead }) => (
-    <div className="flex items-center space-x-3 text-left pl-6">
+    <div className="flex items-center space-x-2 text-left">
         <LeadsAvatar nome={lead.nome} interesse={lead.interesse} />
         <div className="space-y-2">
             {lead.nome?.trim() && <CopyText text={lead.nome} className="font-semibold text-card-foreground" />}

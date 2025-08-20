@@ -1,12 +1,12 @@
 // @/features/leads/hooks/usePollingLeads.ts
 "use client";
 
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { useEffect, useState, useMemo } from "react";
-import { Lead } from "@/entities/lead";
-import { LeadContagem } from "@/entities/leadsContagem";
-import { getLeads } from "@/features/leads/service/leadsService";
-import { calcularContagem } from "@/features/leads/utils/calcularContagem";
+import {useQuery, UseQueryResult} from "@tanstack/react-query";
+import {useEffect, useMemo, useState} from "react";
+import {Lead} from "@/entities/lead";
+import {LeadContagem} from "@/entities/leadsContagem";
+import {getLeads} from "@/features/leads/service/leadsService";
+import {calcularContagem} from "@/features/leads/utils/calcularContagem";
 
 export interface Filters {
     busca: string;
@@ -65,7 +65,6 @@ export function usePollingLeads(
     currentPage: number,
     pageSize: number
 ) {
-    // Opcional: use o estado de erro para controlar o polling, se necessário
     const [isPolling, setIsPolling] = useState(true);
 
     const queryKey = useMemo(
@@ -76,8 +75,6 @@ export function usePollingLeads(
     const query: UseQueryResult<LeadsResponse, Error> = useQuery({
         queryKey,
         queryFn: () => fetchLeadsData(filters, activeTab, currentPage, pageSize),
-        // O refetchInterval pode ser uma função para maior controle.
-        // Ele pode, por exemplo, aumentar o intervalo em caso de erro.
         refetchInterval: isPolling ? 15000 : false,
         refetchOnWindowFocus: true,
         enabled: pageSize > 0 && isPolling,
@@ -85,9 +82,9 @@ export function usePollingLeads(
 
     useEffect(() => {
         if (query.isError) {
-            setIsPolling(false); // Para o polling em caso de erro
+            setIsPolling(false);
         } else if (query.isSuccess) {
-            setIsPolling(true); // Restaura o polling se a busca for bem-sucedida
+            setIsPolling(true);
         }
     }, [query.isError, query.isSuccess, query.error]);
 

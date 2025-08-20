@@ -1,4 +1,4 @@
-import { useState, useDeferredValue, useEffect } from "react";
+import {useDeferredValue, useEffect, useState} from "react";
 
 /**
  * Hook para atrasar a exibição de um estado de carregamento.
