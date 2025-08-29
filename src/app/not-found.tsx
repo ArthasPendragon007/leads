@@ -24,7 +24,7 @@ export default function NotFound() {
 
                 {/* Botão para voltar à página inicial com variante outline */}
                 <Link href="/leads" passHref>
-                    <Button variant="outline" className="text-lg px-10 py-3">
+                    <Button variant="outline" className="cursor-pointer text-lg px-10 py-3">
                         Voltar para a página inicial
                     </Button>
                 </Link>

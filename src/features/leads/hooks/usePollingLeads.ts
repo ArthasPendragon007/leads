@@ -74,7 +74,7 @@ export function usePollingLeads(
     const query: UseQueryResult<LeadsResponse, Error> = useQuery({
         queryKey,
         queryFn: () => fetchLeadsData(filters, activeTab, currentPage, pageSize),
-        refetchInterval: isPolling ? 15000 : false,
+        refetchInterval: isPolling ? 100000 : false,
         refetchOnWindowFocus: true,
         enabled: pageSize > 0 && isPolling,
     });

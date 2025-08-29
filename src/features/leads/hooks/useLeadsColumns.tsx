@@ -1,11 +1,21 @@
 import React, {useMemo} from "react";
-import {BriefcaseIcon, Calendar, HandshakeIcon, LucideMegaphone, MoreVertical, Users, Zap,} from "lucide-react";
+import {
+    BriefcaseIcon,
+    Calendar,
+    HandshakeIcon,
+    HouseIcon,
+    LucideMegaphone,
+    MoreVertical,
+    Users,
+    Zap,
+} from "lucide-react";
 
 const columnMeta = {
-    contato: { label: "Contato", icon: <Users className="w-4 h-4" />, width: 40, minWidth: 1 },
+    contato: { label: "Contato", icon: <Users className="w-4 h-4" />, width: 10, minWidth: 50 },
+    cidade: { label: "Cidade", icon: <HouseIcon className="w-4 h-4" />, width: 16, minWidth: 20 },
     origem: { label: "Origem", icon: <Zap className="w-4 h-4" />, width: 20, minWidth: 10 },
     anuncio: { label: "Anúncio", icon: <LucideMegaphone className="w-4 h-4" />, width: 12, minWidth: 10 },
-    parceiro: { label: "Parceiro", icon: <HandshakeIcon className="w-4 h-4" />, width: 12, minWidth: 10 },
+    parceiro: { label: "Parceiro", icon: <HandshakeIcon className="w-4 h-4" />, width: 5, minWidth: 10 },
     interesse: { label: "Interesse", icon: <BriefcaseIcon className="w-4 h-4" />, width: 12, minWidth: 10 },
     data: { label: "Data", icon: <Calendar className="w-4 h-4" />, width: 10, minWidth: 10 },
     acoes: { label: "Ações", icon: <MoreVertical className="w-4 h-4" />, width: 10, minWidth: 10 },

@@ -4,7 +4,7 @@ import {GeistMono} from 'geist/font/mono'
 import './globals.css'
 import ReactQueryProvider from './ReactQueryProvider'
 import {UndoManagerProvider} from "@/features/undo/hooks/useUndoManager";
-import {UndoFloatingButton} from "@/components/shared/UndoFloatingButton";
+import {UndoFloatingButton} from "@/features/undo/components/UndoFloatingButton";
 import {ThemeProvider} from "@/app/ThemeProvider";
 import {ModeToggle} from "@/components/shared/ModeToggle";
 

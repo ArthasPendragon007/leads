@@ -58,12 +58,12 @@ export default function Error({ error, reset }: ErrorProps) {
                     <Button
                         onClick={() => reset()}
                         variant="default"
-                        className="bg-foreground text-background"
+                        className="bg-foreground text-background cursor-pointer"
                     >
                         Tentar Novamente
                     </Button>
                     <Link href="/leads" passHref>
-                        <Button variant="outline">Ir para a página inicial</Button>
+                        <Button variant="outline" className="cursor-pointer">Ir para a página inicial</Button>
                     </Link>
                 </div>
             </div>

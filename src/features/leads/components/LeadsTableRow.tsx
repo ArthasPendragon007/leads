@@ -1,38 +1,35 @@
 "use client";
 
-import React, {ReactNode, useEffect, useState} from "react";
+import React, {ReactNode} from "react";
 import {motion} from "framer-motion";
 import {TableCell} from "@/components/ui/table";
 import {Lead} from "@/entities/lead";
 import {useUpdateLead} from "@/features/leads/hooks/useUpdateLead";
 import {LeadsFonteMeioTag} from "@/features/leads/components/LeadsFonteMeioTag";
-import {LeadsParceiroField} from "@/features/leads/components/LeadsParceiroField";
 import {LeadsContactCell} from "./LeadsContactCell";
 import {LeadsInteresseCell} from "./LeadsInteresseCell";
 import {LeadsAcoesCell} from "./LeadsAcoesCell";
 import {ColumnId, DynamicColumn} from "@/features/leads/hooks/useLeadsColumns";
+import {LeadsParceiroField} from "@/features/leads/components/LeadsParceiroField";
+import {MunicipioComboBox} from "@/features/municipios/components/MunicipioComboBox";
 
 interface LeadsTableRowProps {
     lead: Lead;
     dynamicColumns: DynamicColumn[];
 }
+const LeadsTableRow: React.FC<LeadsTableRowProps> = ({ lead, dynamicColumns, }) => {
 
-const LeadsTableRow: React.FC<LeadsTableRowProps> = ({ lead, dynamicColumns }) => {
-    const [editandoParceiro, setEditandoParceiro] = useState(false);
-    const [valorParceiro, setValorParceiro] = useState(lead.parceiro || "");
-
-    const { mutate, isPending, isError } = useUpdateLead({
-        onSuccess: () => setEditandoParceiro(false),
+    const { mutate, isPending } = useUpdateLead({
     });
 
-    useEffect(() => {
-        setValorParceiro(lead.parceiro || "");
-    }, [lead.parceiro]);
 
-    const updateLeadField = (campo: keyof Lead, valor: any) =>
+    const updateLeadField = async (campo: keyof Lead, valor: any) =>
         mutate({ oldData: lead, newData: { ...lead, [campo]: valor } });
 
-    const salvarParceiro = () => updateLeadField("parceiro", valorParceiro);
+    const salvarParceiro = (novoValor: string) => updateLeadField("parceiro", novoValor);
+
+    const salvarCidade = (novoValor: string) => updateLeadField("cidade", novoValor);
+
 
     const renderCampo = (valor?: string): ReactNode =>
         valor?.trim() ? <span className="text-card-foreground">{valor}</span> : <span className="italic text-muted-foreground">Não informado</span>;
@@ -43,20 +40,17 @@ const LeadsTableRow: React.FC<LeadsTableRowProps> = ({ lead, dynamicColumns }) =
             : "";
 
     const columnContent: Record<ColumnId, ReactNode> = {
-        contato: <LeadsContactCell lead={lead} />,
-        origem: <LeadsFonteMeioTag fonte={lead.fonte} meio={lead.meio} />,
+        contato: <LeadsContactCell lead={lead} onUpdate={updateLeadField} isPending={isPending} />,
+        origem: lead.fonte?.trim() && lead.meio?.trim() ? <LeadsFonteMeioTag fonte={lead.fonte} meio={lead.meio}/> : <span className="italic text-muted-foreground">Não informado</span>,
+        cidade: <div className="flex items-center justify-center"> <MunicipioComboBox initialValue={lead.cidade} onSave={salvarCidade} placeholder={"Selecione uma cidade..." } className="w-[200px]" isPending={isPending}/> </div>,
         anuncio: renderCampo(lead.anuncio),
         parceiro: (
-            <div className="flex justify-center items-center">
+            <div className="flex items-center justify-center">
                 <LeadsParceiroField
                     interesse={lead.interesse}
-                    valorParceiro={valorParceiro}
-                    setValorParceiro={setValorParceiro}
-                    editandoParceiro={editandoParceiro}
-                    setEditandoParceiro={setEditandoParceiro}
-                    salvarParceiro={salvarParceiro}
+                    valorParceiro={lead.parceiro || ""}
+                    onSave={salvarParceiro}
                     isPending={isPending}
-                    isError={isError}
                 />
             </div>
         ),
@@ -68,7 +62,7 @@ const LeadsTableRow: React.FC<LeadsTableRowProps> = ({ lead, dynamicColumns }) =
     return (
         <motion.tr layout initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }} transition={{ duration: 0.3 }} className="border-b border-border align-middle hover:bg-muted transition-colors duration-200">
             {dynamicColumns.map((col) => (
-                <TableCell key={col.id} style={{ minWidth: col.minWidth || 120 }} className={`py-4 whitespace-nowrap text-ellipsis ${col.id === "contato" ? "pl-0 text-left" : "text-center"}`}>
+                <TableCell key={col.id} style={{ minWidth: col.minWidth || 120 }} className={`py-3 whitespace-nowrap text-ellipsis ${col.id === "contato" ? "pl-0 text-left" : "text-center"}`}>
                     {columnContent[col.id]}
                 </TableCell>
             ))}

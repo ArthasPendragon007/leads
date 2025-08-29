@@ -3,10 +3,9 @@ import {LucideCircleCheckBig, Users} from "lucide-react";
 import {TabType} from "@/entities/lead";
 import {Filters} from "@/features/leads/types";
 import {SearchBar} from "@/components/shared/SearchBar";
-import {TabButton} from "../../../components/shared/TabButton";
-import {FilterSelect} from "../../../components/shared/FilterSelect";
+import { TabButton } from "@/components/shared/TabButton";
+import {FilterSelect} from "@/components/shared/FilterSelect";
 
-// Interface corrigida para receber 'busca' e 'onSearchChange' separadamente
 interface LeadsFiltersProps {
     activeTab: TabType;
     onChange: (tab: TabType) => void;
@@ -47,7 +46,7 @@ export const LeadsFilters: React.FC<LeadsFiltersProps> = ({
             {/* Filtros */}
             <div className="pt-4 flex flex-wrap gap-6">
                 <SearchBar
-                    value={busca} // Use a prop 'busca'
+                    value={busca}
                     onChange={(newBusca) => onSearchChange(newBusca)} // Use a nova prop
                 />
                 <FilterSelect
@@ -59,6 +58,8 @@ export const LeadsFilters: React.FC<LeadsFiltersProps> = ({
                         { value: "Instagram", label: "Instagram" },
                         { value: "Facebook", label: "Facebook" },
                         { value: "Google", label: "Google" },
+                        { value: "outros", label: "Outros" },
+
                     ]}
                 />
                 <FilterSelect

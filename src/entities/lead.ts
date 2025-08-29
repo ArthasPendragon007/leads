@@ -12,6 +12,7 @@ export interface Lead {
   anuncio: string
   status: string
   parceiro: string
+  cidade: string
 }
 
 export type TabType = "pendentes" | "concluidos"

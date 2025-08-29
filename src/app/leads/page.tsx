@@ -83,7 +83,7 @@ const Page: React.FC = () => {
         setBusca(newBusca);
         setCurrentPage(1);
     };
-
+    
     return (
         <main className="min-h-screen min-w-[450px] p-8 bg-background">
             <header className="mb-6">
